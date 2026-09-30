@@ -928,7 +928,7 @@ mod streaming_runtime_tests {
         // Token issued for a DIFFERENT resource (file 99 instead of 1) -> 403
         let token_wrong_resource = token_manager.issue_token("99", None);
         let resp_wrong = client
-            .get(&format!("{endpoint}?token={token_wrong_resource}"))
+            .get(format!("{endpoint}?token={token_wrong_resource}"))
             .send()
             .await
             .unwrap();
@@ -940,7 +940,7 @@ mod streaming_runtime_tests {
 
         // Range request with invalid token -> 403
         let resp_range_invalid = client
-            .get(&format!("{endpoint}?token=invalid-token"))
+            .get(format!("{endpoint}?token=invalid-token"))
             .header("Range", "bytes=0-100")
             .send()
             .await
@@ -950,7 +950,7 @@ mod streaming_runtime_tests {
         // Valid token for file 1 -> passes stream authorization boundary (advances to account check, returning 404 because no account is open in this test)
         let token_valid = token_manager.issue_token("1", None);
         let resp_valid = client
-            .get(&format!("{endpoint}?token={token_valid}"))
+            .get(format!("{endpoint}?token={token_valid}"))
             .send()
             .await
             .unwrap();
@@ -962,7 +962,7 @@ mod streaming_runtime_tests {
 
         // Range request with valid token -> passes stream authorization boundary (404 because no account is open)
         let resp_range_valid = client
-            .get(&format!("{endpoint}?token={token_valid}"))
+            .get(format!("{endpoint}?token={token_valid}"))
             .header("Range", "bytes=0-100")
             .send()
             .await
@@ -972,7 +972,7 @@ mod streaming_runtime_tests {
         // Revoking all tokens immediately invalidates the bearer capability
         token_manager.revoke_all();
         let resp_revoked = client
-            .get(&format!("{endpoint}?token={token_valid}"))
+            .get(format!("{endpoint}?token={token_valid}"))
             .send()
             .await
             .unwrap();

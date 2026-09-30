@@ -144,11 +144,9 @@ impl FailureLimiter {
     pub fn is_limited(&mut self, identity: &str) -> Option<u64> {
         let now = Instant::now();
         self.prune(now, identity);
-        self.limited_until.get(identity).map(|until| {
-            u64::try_from(until.duration_since(now).as_secs())
-                .unwrap_or(1)
-                .max(1)
-        })
+        self.limited_until
+            .get(identity)
+            .map(|until| until.duration_since(now).as_secs().max(1))
     }
 
     pub fn record_failure(&mut self, identity: &str) {

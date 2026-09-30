@@ -380,6 +380,7 @@ async fn authenticate_client(
 
 /// Connects to the upstream HTTP/HTTPS proxy and relays the authenticated
 /// client's traffic. Runs only after `authenticate_client` succeeded.
+#[allow(clippy::too_many_arguments)]
 async fn connect_and_relay(
     mut client_stream: TcpStream,
     upstream_host: &str,
