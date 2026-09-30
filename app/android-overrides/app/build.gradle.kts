@@ -68,6 +68,12 @@ android {
     packaging {
         jniLibs {
             useLegacyPackaging = false
+            // The Tauri CLI symlinks the Rust cdylib into src/main/jniLibs and AGP
+            // discovers the same file through two source registrations, which fails
+            // the jniLibs merge as a duplicate. Both entries resolve to the same
+            // physical file, so picking the first is content-identical; the
+            // certificate, ABI, and 16 KB alignment gates still verify the result.
+            pickFirsts.add("**/libapp_lib.so")
         }
     }
     signingConfigs {
