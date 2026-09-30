@@ -66,9 +66,16 @@ describe('release safety gates', () => {
     expect(android).toContain(':app:assembleArm64Release');
     expect(android).toContain('-x :app:rustBuildArm64Release');
     expect(android).toContain("if: env.HAS_ANDROID_SIGNING_KEY == 'true'");
-    expect(release).not.toContain('uses: ./.github/workflows/android.yml');
-    expect(release).not.toContain('telegram-drive-android-signed');
-    expect(release).not.toContain('android-update.json');
+    // Android release artifacts are produced by the tag-driven release workflow:
+    // it must invoke the protected Android workflow and attach its signed,
+    // validated artifacts to the draft release before anything can publish.
+    expect(release).toContain('uses: ./.github/workflows/android.yml');
+    expect(release).toContain('secrets: inherit');
+    expect(release).toContain('name: telegram-drive-android-signed');
+    expect(release).toContain('Validate required Android artifacts');
+    expect(release).toContain('ShelfDrive_${version}.apk');
+    expect(release).toContain('ShelfDrive_${version}.aab');
+    expect(release).toContain('android-update.json.sig');
   });
 
   it('runs frontend regression tests in the native desktop matrix', () => {
@@ -319,7 +326,7 @@ describe('release safety gates', () => {
     expect(readme).toContain('TDENC2-protected audio, video, and PDF content can stream');
     expect(readme).not.toContain('In-app image, PDF, archive, audio, and video previews.');
     expect(readme).not.toContain('Androidv4.0.0beta');
-    expect(androidRunbook).toContain('That workflow does not invoke Android CI');
+    expect(androidRunbook).toContain('publishes only after every gate passes');
     expect(androidRunbook).not.toContain('Telegram-Drive-v3.5.0-android-universal.apk');
     expect(cargoManifest).not.toContain('unlimited, secure cloud storage');
     expect(authWizard).not.toContain('Self-hosted secure storage');
@@ -366,7 +373,7 @@ describe('release safety gates', () => {
     expect(release).toContain('node scripts/generate-sboms.cjs release-assurance');
     expect(release).toContain('node scripts/generate-checksums.cjs release-assets release-assets/SHA256SUMS.txt');
     expect(release).toContain('subject-checksums: release-assurance/SUBJECTS.sha256');
-    expect(release).toContain('needs: [create-release, build-tauri, build-arch]');
+    expect(release).toContain('needs: [create-release, build-tauri, build-arch, collect-android]');
     expect(release).toContain('subject-checksums: release-assurance/ARCH_SUBJECT.sha256');
     expect(release).toContain('sbom-path: release-assets/shelf-drive-arch-runtime-sbom.cdx.json');
     expect(release).toContain('needs: [create-release, build-tauri, build-arch, release-assurance]');

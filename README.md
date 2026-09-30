@@ -165,6 +165,7 @@ The mobile interface features a **frosted glass navigation system** with a 5-tab
 Shelf Drive is built with a **zero-trust, local-first architecture**:
 
 - 🔒 **No relay servers** — Your files travel directly between your device and Telegram's servers via MTProto encryption. No third-party infrastructure touches your data.
+- 🎧 **Encrypted streaming** — TDENC2-protected audio, video, and PDF content can stream.
 - 🗝️ **Credentials stay local** — Your API hash is stored in your OS keychain (Windows Credential Manager, macOS Keychain, or Linux Secret Service). It never leaves your machine.
 - 🛡️ **Optional encryption** — Enable TDENC2 envelope encryption to add a vault passphrase on top of Telegram's built-in encryption. Per-file passphrases and recovery bundle export are supported.
 - 📜 **Open source** — Every line of code is auditable. The Rust backend, React frontend, and all IPC boundaries are fully transparent.
