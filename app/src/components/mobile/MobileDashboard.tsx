@@ -1,5 +1,5 @@
 import { lazy, useState, useCallback, useMemo, useEffect, useRef } from 'react';
-import { Folder, Download, Menu, LogOut, RefreshCw, UploadCloud, MoreVertical, Trash2, Pencil, Globe, Shield, Lock, ChevronDown, ChevronRight, Share2, Link, Copy, Check, X, Loader2, Activity, Zap, Eye, EyeOff, HelpCircle, Pause, Play, RotateCcw, CheckCircle2, Database, Clock3, Star, Files as FilesIcon, Image as ImageIcon, Film as FilmIcon, FileText as FileTextIcon, Plus, FileWarning, Clapperboard, ArrowLeft, Send, Monitor, Languages, Moon, LifeBuoy, FileArchive, Paintbrush, Search } from 'lucide-react';
+import { Folder, Download, Menu, LogOut, RefreshCw, UploadCloud, MoreVertical, Trash2, Pencil, Globe, Shield, Lock, ChevronDown, ChevronRight, Share2, Link, Copy, Check, X, Loader2, Activity, Zap, Eye, EyeOff, HelpCircle, Pause, Play, RotateCcw, CheckCircle2, Database, Clock3, Star, Files as FilesIcon, Image as ImageIcon, Film as FilmIcon, FileText as FileTextIcon, Plus, FileWarning, Clapperboard, ArrowLeft, Send, Monitor, Languages, LifeBuoy, FileArchive, Paintbrush, Search } from 'lucide-react';
 import { android, files as filesApi, media, settings as settingsApi, shares, system } from '../../api/index';
 import { openUrl } from '@tauri-apps/plugin-opener';
 import { onOpenUrl } from '@tauri-apps/plugin-deep-link';
@@ -8,7 +8,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { MobileBottomNav, type MobileTab } from './MobileBottomNav';
 import { TouchFileList } from './TouchFileList';
-import { ThemeToggle } from '../shared/ThemeToggle';
+import { ThemeSegmented } from './ThemeSegmented';
 import { DriveConceptTour } from '../desktop/dashboard/DriveConceptTour';
 import { ActionPopover, ActionItem } from './ActionPopover';
 import { ShareDialog } from '../desktop/dashboard/ShareDialog';
@@ -1116,7 +1116,6 @@ export default function MobileDashboard({ onLogout }: { onLogout?: () => void })
                 </div>
               </div>
               <div className="flex shrink-0 items-center gap-2">
-                <ThemeToggle />
                 <GlassIconButton label="Open folders" onClick={() => setIsSidebarOpen(true)}>
                   <Menu className="h-4.5 w-4.5" aria-hidden="true" />
                 </GlassIconButton>
@@ -1549,11 +1548,9 @@ export default function MobileDashboard({ onLogout }: { onLogout?: () => void })
             )}
 
             <SettingsSection title="Appearance">
-              <SettingsRow
-                icon={<Moon className="h-4.5 w-4.5" aria-hidden="true" />}
-                title={t('common.theme')}
-                trailing={<ThemeToggle />}
-              />
+              <div className="px-4 py-3">
+                <ThemeSegmented />
+              </div>
               <SettingsRow
                 icon={<Languages className="h-4.5 w-4.5" aria-hidden="true" />}
                 title={t('common.language')}

@@ -19,7 +19,8 @@ interface MobileBottomNavProps {
  * Proportions: a 30px-radius glass pill, 6px inner padding around 60px
  * hit rows (~72px total), held 16px off the screen edges. The active
  * item gets a soft glass capsule that slides between positions
- * (transform-only, 220ms) while icon and label switch to the accent.
+ * (transform-only, 220ms) while icon and label switch to white on the
+ * frosted capsule, matching the white arrow on the upload button.
  * Pressing a tab scales the row to 0.97 for tactile feedback.
  */
 export function MobileBottomNav({ activeTab, onChange, isAndroid, isTelevision }: MobileBottomNavProps) {
@@ -71,7 +72,7 @@ export function MobileBottomNav({ activeTab, onChange, isAndroid, isTelevision }
               aria-label={label}
               className={cx(
                 'relative z-10 flex min-h-[3.75rem] flex-1 flex-col items-center justify-center gap-1 rounded-full px-0.5 transition-[color,transform] duration-200 ease-out motion-reduce:transition-none active:scale-[0.97] focus-visible:outline focus-visible:outline-2 focus-visible:outline-app-accent',
-                isActive ? 'text-[#075e82]' : 'text-app-text-secondary hover:text-app-text',
+                isActive ? 'text-white' : 'text-app-text-secondary hover:text-app-text',
               )}
             >
               <Icon

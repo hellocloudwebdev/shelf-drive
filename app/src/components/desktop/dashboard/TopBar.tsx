@@ -133,13 +133,13 @@ export function TopBar({
                 </div>
             ) : (
                 <>
-                    <div className="min-w-[8rem] flex-1">
+                    <div className="min-w-0 max-w-[14rem] shrink-0">
                         <h1 className="truncate text-app-title font-semibold tracking-[-0.01em] text-app-text" title={currentFolderName}>
                             {currentFolderName}
                         </h1>
                     </div>
 
-                    <div ref={filterRef} className="relative flex w-full max-w-[25rem] items-center gap-1">
+                    <div ref={filterRef} className="relative flex min-w-0 flex-1 max-w-[25rem] items-center gap-1">
                         <SearchField
                             data-file-search
                             containerClassName="min-w-0 flex-1"
@@ -185,7 +185,7 @@ export function TopBar({
                         )}
                     </div>
 
-                    <div className="flex flex-1 items-center justify-end gap-1.5">
+                    <div className="flex shrink-0 items-center justify-end gap-1.5 ms-auto">
                         {settings.proxyEnabled && settings.proxyLiveStateEnabled && (
                             <div
                                 className="quiet-control flex h-7 items-center gap-1.5 px-2 text-badge text-app-text-secondary"

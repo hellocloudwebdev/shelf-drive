@@ -8,7 +8,7 @@ import { BottomSheet } from './glass';
  * saturated element on the screen; floats above the bottom navigation,
  * clear of the safe area. Visuals (icy radial glow, white rim, soft blue
  * shadow, press response) come from .glass-fab; this markup adds the
- * transition hooks and the 64px hit target.
+ * transition hooks and the 56px hit target.
  */
 export function FloatingUploadButton({ onClick }: { onClick: () => void }) {
   return (
@@ -16,9 +16,9 @@ export function FloatingUploadButton({ onClick }: { onClick: () => void }) {
       type="button"
       onClick={onClick}
       aria-label="Upload"
-      className="glass-fab fixed bottom-[calc(6.5rem+env(safe-area-inset-bottom,0px))] right-4 z-40 flex h-16 w-24 items-center justify-center rounded-full text-white transition-transform duration-200 ease-out motion-reduce:transition-none active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-accent"
+      className="glass-fab fixed bottom-[calc(6.5rem+env(safe-area-inset-bottom,0px))] right-4 z-40 flex h-14 w-20 items-center justify-center rounded-full text-white transition-transform duration-200 ease-out motion-reduce:transition-none active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-accent"
     >
-      <ArrowUp className="h-7 w-7" strokeWidth={2.5} aria-hidden="true" />
+      <ArrowUp className="h-6 w-6" strokeWidth={2.5} aria-hidden="true" />
     </button>
   );
 }
