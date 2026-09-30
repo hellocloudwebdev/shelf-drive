@@ -34,7 +34,7 @@ const UPDATE_MANIFEST_URL: &str =
 const UPDATE_SIGNATURE_URL: &str =
     "https://github.com/Neeraj-shaw/shelf-drive/releases/latest/download/android-update.json.sig";
 #[cfg(target_os = "android")]
-const UPDATE_PUBLIC_KEY: &str = "untrusted comment: minisign public key: 507B700E3497963C\nRWQ8lpc0DnB7UL08Mw1DO9KFYeMLcdhVwXH40qhGBLJUc5ppbK1XHM2J\n";
+const UPDATE_PUBLIC_KEY: &str = "untrusted comment: minisign public key: 03E7E3B7C09606AE\nRWSuBpbAt+PnA7vfRA8F0MoFWAY3YoqErSB4AO1LhTG6KyvcLt53p+Hx\n";
 #[cfg(target_os = "android")]
 const MAX_MANIFEST_BYTES: usize = 64 * 1024;
 #[cfg(target_os = "android")]
