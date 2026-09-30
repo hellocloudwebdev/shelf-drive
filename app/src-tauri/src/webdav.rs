@@ -1688,7 +1688,10 @@ mod tests {
         let service = actix_test::init_service(
             App::new()
                 .app_data(web::Data::new(handler))
-                .app_data(web::Data::new(WebDavAuth { token_hash, port: 8551 }))
+                .app_data(web::Data::new(WebDavAuth {
+                    token_hash,
+                    port: 8551,
+                }))
                 .service(web::resource("/{tail:.*}").to(webdav_handler)),
         )
         .await;
@@ -1739,7 +1742,9 @@ mod tests {
             .insert_header(("Host", "attacker.example:8551"))
             .to_request();
         assert_eq!(
-            actix_test::call_service(&service, invalid_host).await.status(),
+            actix_test::call_service(&service, invalid_host)
+                .await
+                .status(),
             actix_web::http::StatusCode::FORBIDDEN
         );
 
@@ -1749,7 +1754,9 @@ mod tests {
             .insert_header(("Host", "localhost.attacker.example"))
             .to_request();
         assert_eq!(
-            actix_test::call_service(&service, rebinding_host).await.status(),
+            actix_test::call_service(&service, rebinding_host)
+                .await
+                .status(),
             actix_web::http::StatusCode::FORBIDDEN
         );
 
@@ -1776,7 +1783,10 @@ mod tests {
         let service = actix_test::init_service(
             App::new()
                 .app_data(web::Data::new(handler))
-                .app_data(web::Data::new(WebDavAuth { token_hash, port: 8551 }))
+                .app_data(web::Data::new(WebDavAuth {
+                    token_hash,
+                    port: 8551,
+                }))
                 .service(web::resource("/{tail:.*}").to(webdav_handler)),
         )
         .await;

@@ -503,7 +503,11 @@ async fn stream_media(
         Some(t) => t,
         None => return HttpResponse::Forbidden().body("Invalid or missing stream token"),
     };
-    if token_data.manager.validate_token(token, &message_id.to_string()).is_err() {
+    if token_data
+        .manager
+        .validate_token(token, &message_id.to_string())
+        .is_err()
+    {
         return HttpResponse::Forbidden().body("Invalid or expired stream authorization");
     }
 
@@ -660,7 +664,9 @@ fn start_server_with_listener(
     listener: TcpListener,
 ) -> std::io::Result<actix_web::dev::Server> {
     let state_data = web::Data::new(state);
-    let token_data = web::Data::new(StreamTokenData { manager: token_manager });
+    let token_data = web::Data::new(StreamTokenData {
+        manager: token_manager,
+    });
     let db_data = web::Data::new(db_pool);
     let transcode_data = web::Data::new(transcode_manager);
     let crypto_data = web::Data::new(crypto_state);

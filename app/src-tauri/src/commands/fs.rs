@@ -6339,10 +6339,8 @@ mod hardening_tests {
 
     #[test]
     fn atomic_download_publish_replaces_destination_only_when_source_exists() {
-        let directory = std::env::temp_dir().join(format!(
-            "shelf-drive-publish-test-{}",
-            uuid::Uuid::new_v4()
-        ));
+        let directory =
+            std::env::temp_dir().join(format!("shelf-drive-publish-test-{}", uuid::Uuid::new_v4()));
         std::fs::create_dir_all(&directory).unwrap();
         let destination = directory.join("result.bin");
         let source = directory.join("result.part");

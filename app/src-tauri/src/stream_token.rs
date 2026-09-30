@@ -307,7 +307,10 @@ mod tests {
                 if i % 2 == 0 {
                     assert_eq!(m.validate_token(&t, "42"), Ok(()));
                 } else {
-                    assert_eq!(m.validate_token(&t, "99"), Err(StreamAuthError::ResourceMismatch));
+                    assert_eq!(
+                        m.validate_token(&t, "99"),
+                        Err(StreamAuthError::ResourceMismatch)
+                    );
                 }
             }));
         }
@@ -323,10 +326,16 @@ mod tests {
 
         // Attempt to use stream token as WebDAV token against a real hash
         let webdav_hash = "97019edd94f27971f9253dce908be0578253e4bec41bf26344a558ea35e74666";
-        assert!(!crate::commands::webdav_settings::verify_token(&stream_token, webdav_hash));
+        assert!(!crate::commands::webdav_settings::verify_token(
+            &stream_token,
+            webdav_hash
+        ));
 
         // Attempt to use stream token as REST API key
         let api_key_hash = "97019edd94f27971f9253dce908be0578253e4bec41bf26344a558ea35e74666";
-        assert!(!crate::commands::api_settings::verify_key(&stream_token, api_key_hash));
+        assert!(!crate::commands::api_settings::verify_key(
+            &stream_token,
+            api_key_hash
+        ));
     }
 }

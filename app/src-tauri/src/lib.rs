@@ -81,8 +81,8 @@ pub mod crypto_commands;
 pub mod db;
 mod db_migrations;
 pub mod fmp4_remux;
-pub mod jni_cache;
 mod http_guard;
+pub mod jni_cache;
 mod local_cors;
 pub mod mp4_utils;
 pub mod server;
@@ -228,8 +228,11 @@ pub async fn restart_api_server(app: &tauri::AppHandle) -> Result<(), String> {
                             api_port,
                         );
                         if !host_ok {
-                            let res = req.into_response(crate::http_guard::host_rejected_response());
-                            futures::future::Either::Left(std::future::ready(Ok(res.map_into_boxed_body())))
+                            let res =
+                                req.into_response(crate::http_guard::host_rejected_response());
+                            futures::future::Either::Left(std::future::ready(Ok(
+                                res.map_into_boxed_body()
+                            )))
                         } else {
                             let fut = srv.call(req);
                             futures::future::Either::Right(async move {

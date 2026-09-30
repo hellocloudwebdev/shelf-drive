@@ -2610,7 +2610,9 @@ mod tests {
             .peer_addr(test_peer)
             .to_http_request();
         assert_eq!(
-            super::check_auth(&req_missing, &api_state).unwrap_err().status(),
+            super::check_auth(&req_missing, &api_state)
+                .unwrap_err()
+                .status(),
             actix_web::http::StatusCode::UNAUTHORIZED
         );
 
@@ -2620,7 +2622,9 @@ mod tests {
             .insert_header(("X-API-Key", "wrong-key"))
             .to_http_request();
         assert_eq!(
-            super::check_auth(&req_invalid, &api_state).unwrap_err().status(),
+            super::check_auth(&req_invalid, &api_state)
+                .unwrap_err()
+                .status(),
             actix_web::http::StatusCode::UNAUTHORIZED
         );
 
@@ -2638,7 +2642,9 @@ mod tests {
                 .insert_header(("X-API-Key", "wrong-key"))
                 .to_http_request();
             assert_eq!(
-                super::check_auth(&req_fail, &api_state).unwrap_err().status(),
+                super::check_auth(&req_fail, &api_state)
+                    .unwrap_err()
+                    .status(),
                 actix_web::http::StatusCode::UNAUTHORIZED
             );
         }
@@ -2649,7 +2655,10 @@ mod tests {
             .insert_header(("X-API-Key", raw_key))
             .to_http_request();
         let limited_err = super::check_auth(&req_limited, &api_state).unwrap_err();
-        assert_eq!(limited_err.status(), actix_web::http::StatusCode::TOO_MANY_REQUESTS);
+        assert_eq!(
+            limited_err.status(),
+            actix_web::http::StatusCode::TOO_MANY_REQUESTS
+        );
         assert!(limited_err.headers().contains_key("Retry-After"));
 
         // Clean up
@@ -2665,14 +2674,12 @@ mod tests {
             actix_web::App::new()
                 .wrap_fn(|req, srv| {
                     use actix_web::dev::Service;
-                    let host_ok = crate::http_guard::host_header_allowed(
-                        req.headers().get("Host"),
-                        8550,
-                    );
+                    let host_ok =
+                        crate::http_guard::host_header_allowed(req.headers().get("Host"), 8550);
                     if !host_ok {
-                        futures::future::Either::Left(std::future::ready(Ok(req.into_response(
-                            crate::http_guard::host_rejected_response(),
-                        ))))
+                        futures::future::Either::Left(std::future::ready(Ok(
+                            req.into_response(crate::http_guard::host_rejected_response())
+                        )))
                     } else {
                         futures::future::Either::Right(srv.call(req))
                     }
@@ -2695,7 +2702,10 @@ mod tests {
             .insert_header(("Host", "attacker.example:8550"))
             .to_request();
         let resp_attacker = actix_web::test::call_service(&service, req_attacker).await;
-        assert_eq!(resp_attacker.status(), actix_web::http::StatusCode::FORBIDDEN);
+        assert_eq!(
+            resp_attacker.status(),
+            actix_web::http::StatusCode::FORBIDDEN
+        );
 
         // Rebinding Host -> 403 Forbidden
         let req_rebinding = actix_web::test::TestRequest::get()
@@ -2703,6 +2713,9 @@ mod tests {
             .insert_header(("Host", "localhost.attacker.example"))
             .to_request();
         let resp_rebinding = actix_web::test::call_service(&service, req_rebinding).await;
-        assert_eq!(resp_rebinding.status(), actix_web::http::StatusCode::FORBIDDEN);
+        assert_eq!(
+            resp_rebinding.status(),
+            actix_web::http::StatusCode::FORBIDDEN
+        );
     }
 }

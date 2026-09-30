@@ -148,7 +148,8 @@ impl BandwidthManager {
         if !belongs_to_current_week {
             log::info!(
                 "[Bandwidth] New week detected. Resetting stats. Old period: {}, New period: {}",
-                stats.date, week_start
+                stats.date,
+                week_start
             );
             stats.up_bytes = 0;
             stats.down_bytes = 0;

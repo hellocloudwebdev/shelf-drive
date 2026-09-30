@@ -172,9 +172,9 @@ pub async fn start_bridge(
 fn is_valid_destination_host(host: &str) -> bool {
     !host.is_empty()
         && host.len() <= 253
-        && host
-            .bytes()
-            .all(|byte| byte.is_ascii_alphanumeric() || byte == b'.' || byte == b'-' || byte == b'_')
+        && host.bytes().all(|byte| {
+            byte.is_ascii_alphanumeric() || byte == b'.' || byte == b'-' || byte == b'_'
+        })
 }
 
 /// Sends a failure reply and closes the session gracefully. Dropping the
@@ -250,7 +250,10 @@ async fn authenticate_client(
         .await
         .map_err(|e| format!("Failed reading auth version: {}", e))?;
     if auth_ver[0] != 0x01 {
-        return Err(format!("Unsupported auth sub-negotiation version: {}", auth_ver[0]));
+        return Err(format!(
+            "Unsupported auth sub-negotiation version: {}",
+            auth_ver[0]
+        ));
     }
 
     let mut user_len = [0u8; 1];
@@ -275,10 +278,8 @@ async fn authenticate_client(
         .await
         .map_err(|e| format!("Failed reading password: {}", e))?;
 
-    let username_ok =
-        constant_time_eq(username.as_slice(), credentials.username.as_bytes());
-    let password_ok =
-        constant_time_eq(password.as_slice(), credentials.password.as_bytes());
+    let username_ok = constant_time_eq(username.as_slice(), credentials.username.as_bytes());
+    let password_ok = constant_time_eq(password.as_slice(), credentials.password.as_bytes());
 
     if !(username_ok && password_ok) {
         // Fail closed: protocol failure status, then terminate the session.
@@ -305,11 +306,7 @@ async fn authenticate_client(
     if req_header[1] != 0x01 {
         // We only support CONNECT (0x01). BIND and UDP ASSOCIATE are rejected
         // after (and never before) authentication; neither has an upstream path.
-        reject_and_close(
-            client_stream,
-            &[0x05, 0x07, 0x00, 0x01, 0, 0, 0, 0, 0, 0],
-        )
-        .await;
+        reject_and_close(client_stream, &[0x05, 0x07, 0x00, 0x01, 0, 0, 0, 0, 0, 0]).await;
         return Err(format!("Unsupported SOCKS command: {}", req_header[1]));
     }
 
@@ -337,13 +334,10 @@ async fn authenticate_client(
                 .read_exact(&mut domain)
                 .await
                 .map_err(|e| format!("Failed reading domain name: {}", e))?;
-            let domain = String::from_utf8(domain).map_err(|e| format!("Invalid domain UTF-8: {}", e))?;
+            let domain =
+                String::from_utf8(domain).map_err(|e| format!("Invalid domain UTF-8: {}", e))?;
             if !is_valid_destination_host(&domain) {
-                reject_and_close(
-                    client_stream,
-                    &[0x05, 0x08, 0x00, 0x01, 0, 0, 0, 0, 0, 0],
-                )
-                .await;
+                reject_and_close(client_stream, &[0x05, 0x08, 0x00, 0x01, 0, 0, 0, 0, 0, 0]).await;
                 return Err("Invalid characters in SOCKS5 destination host".into());
             }
             domain
@@ -363,11 +357,7 @@ async fn authenticate_client(
             format!("[{}]", parts.join(":"))
         }
         _ => {
-            reject_and_close(
-                client_stream,
-                &[0x05, 0x08, 0x00, 0x01, 0, 0, 0, 0, 0, 0],
-            )
-            .await;
+            reject_and_close(client_stream, &[0x05, 0x08, 0x00, 0x01, 0, 0, 0, 0, 0, 0]).await;
             return Err(format!("Unsupported SOCKS address type: {}", req_header[3]));
         }
     };
@@ -470,11 +460,7 @@ async fn connect_and_relay(
     let response_str = String::from_utf8_lossy(&response_headers);
     if !response_str.starts_with("HTTP/1.1 200") && !response_str.starts_with("HTTP/1.0 200") {
         let status = response_str.lines().next().unwrap_or("Unknown status");
-        reject_and_close(
-            client_stream,
-            &[0x05, 0x05, 0x00, 0x01, 0, 0, 0, 0, 0, 0],
-        )
-        .await;
+        reject_and_close(client_stream, &[0x05, 0x05, 0x00, 0x01, 0, 0, 0, 0, 0, 0]).await;
         return Err(format!("Proxy connection rejected: {}", status));
     }
 
@@ -626,7 +612,13 @@ mod tests {
     async fn wrong_password_is_rejected_and_session_closes() {
         let (bridge, requests) = start_test_bridge().await;
         let mut client_stream = TcpStream::connect(bridge.local_addr).await.unwrap();
-        let (method, auth) = negotiate(&mut client_stream, bridge.credentials.username.as_bytes(), b"wrong-password").await.unwrap();
+        let (method, auth) = negotiate(
+            &mut client_stream,
+            bridge.credentials.username.as_bytes(),
+            b"wrong-password",
+        )
+        .await
+        .unwrap();
         assert_eq!(method, 0x02);
         assert_eq!(auth, 0x01);
         expect_closed(&mut client_stream).await;
@@ -637,7 +629,13 @@ mod tests {
     async fn wrong_username_is_rejected_and_session_closes() {
         let (bridge, requests) = start_test_bridge().await;
         let mut client_stream = TcpStream::connect(bridge.local_addr).await.unwrap();
-        let (_, auth) = negotiate(&mut client_stream, b"not-the-bridge-user", bridge.credentials.password.as_bytes()).await.unwrap();
+        let (_, auth) = negotiate(
+            &mut client_stream,
+            b"not-the-bridge-user",
+            bridge.credentials.password.as_bytes(),
+        )
+        .await
+        .unwrap();
         assert_eq!(auth, 0x01);
         expect_closed(&mut client_stream).await;
         assert_no_upstream_traffic(&requests).await;
@@ -726,7 +724,10 @@ mod tests {
             .write_all(&[0x05, 0x01, 0x00, 0x01, 93, 184, 216, 34])
             .await
             .unwrap();
-        client_stream.write_all(&443u16.to_be_bytes()).await.unwrap();
+        client_stream
+            .write_all(&443u16.to_be_bytes())
+            .await
+            .unwrap();
         let mut connect_reply = [0u8; 10];
         client_stream.read_exact(&mut connect_reply).await.unwrap();
         assert_eq!(connect_reply[1], 0x00);
@@ -751,9 +752,15 @@ mod tests {
         ipv6[2] = 0x0d;
         ipv6[3] = 0xb8;
         ipv6[15] = 0x01;
-        client_stream.write_all(&[0x05, 0x01, 0x00, 0x04]).await.unwrap();
+        client_stream
+            .write_all(&[0x05, 0x01, 0x00, 0x04])
+            .await
+            .unwrap();
         client_stream.write_all(&ipv6).await.unwrap();
-        client_stream.write_all(&443u16.to_be_bytes()).await.unwrap();
+        client_stream
+            .write_all(&443u16.to_be_bytes())
+            .await
+            .unwrap();
         let mut connect_reply = [0u8; 10];
         client_stream.read_exact(&mut connect_reply).await.unwrap();
         assert_eq!(connect_reply[1], 0x00);
@@ -816,7 +823,10 @@ mod tests {
     async fn listener_is_loopback_only() {
         let (bridge, _requests) = start_test_bridge().await;
         assert!(bridge.local_addr.ip().is_loopback());
-        assert_eq!(bridge.local_addr.ip(), std::net::IpAddr::from([127, 0, 0, 1]));
+        assert_eq!(
+            bridge.local_addr.ip(),
+            std::net::IpAddr::from([127, 0, 0, 1])
+        );
     }
 
     #[tokio::test]

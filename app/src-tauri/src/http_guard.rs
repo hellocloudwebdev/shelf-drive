@@ -73,7 +73,9 @@ pub fn host_header_str_allowed(host_str: Option<&str>, bound_port: u16) -> bool 
             if bound_port == 0 {
                 true
             } else {
-                port.parse::<u16>().map(|p| p == bound_port).unwrap_or(false)
+                port.parse::<u16>()
+                    .map(|p| p == bound_port)
+                    .unwrap_or(false)
             }
         }
     }
@@ -143,7 +145,8 @@ impl FailureLimiter {
         let now = Instant::now();
         self.prune(now, identity);
         self.limited_until.get(identity).map(|until| {
-            u64::try_from(until.duration_since(now).as_secs()).unwrap_or(1)
+            u64::try_from(until.duration_since(now).as_secs())
+                .unwrap_or(1)
                 .max(1)
         })
     }
@@ -213,9 +216,18 @@ mod tests {
     #[test]
     fn rejects_attacker_controlled_and_malformed_hosts() {
         assert!(!host_header_str_allowed(Some("attacker.example"), 8550));
-        assert!(!host_header_str_allowed(Some("localhost.attacker.example"), 8550));
-        assert!(!host_header_str_allowed(Some("127.0.0.1.attacker.example"), 8550));
-        assert!(!host_header_str_allowed(Some("evil-localhost.example"), 8550));
+        assert!(!host_header_str_allowed(
+            Some("localhost.attacker.example"),
+            8550
+        ));
+        assert!(!host_header_str_allowed(
+            Some("127.0.0.1.attacker.example"),
+            8550
+        ));
+        assert!(!host_header_str_allowed(
+            Some("evil-localhost.example"),
+            8550
+        ));
         assert!(!host_header_str_allowed(Some("localhost:9999"), 8550));
         assert!(!host_header_str_allowed(Some("[::1]:8550"), 8550));
         assert!(!host_header_str_allowed(Some(""), 8550));
@@ -226,7 +238,8 @@ mod tests {
 
     #[test]
     fn rate_limiter_blocks_after_threshold_and_recovers() {
-        let mut limiter = FailureLimiter::new(3, Duration::from_millis(50), Duration::from_millis(80));
+        let mut limiter =
+            FailureLimiter::new(3, Duration::from_millis(50), Duration::from_millis(80));
         assert!(limiter.is_limited("127.0.0.1").is_none());
         limiter.record_failure("127.0.0.1");
         limiter.record_failure("127.0.0.1");
@@ -240,7 +253,8 @@ mod tests {
 
     #[test]
     fn rate_limiter_window_expires() {
-        let mut limiter = FailureLimiter::new(2, Duration::from_millis(40), Duration::from_millis(40));
+        let mut limiter =
+            FailureLimiter::new(2, Duration::from_millis(40), Duration::from_millis(40));
         limiter.record_failure("h");
         limiter.record_failure("h");
         assert!(limiter.is_limited("h").is_some());

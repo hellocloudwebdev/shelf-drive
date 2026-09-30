@@ -2133,9 +2133,7 @@ async fn serve_hls_file(
             }
             let body = if is_playlist {
                 match String::from_utf8(data) {
-                    Ok(playlist) => {
-                        playlist_with_stream_token(&playlist, token).into_bytes()
-                    }
+                    Ok(playlist) => playlist_with_stream_token(&playlist, token).into_bytes(),
                     Err(error) => {
                         log::error!(
                             "Transcode: Invalid UTF-8 HLS playlist {:?}: {}",
@@ -2445,10 +2443,13 @@ mod cache_tests {
         let playlist_response = actix_web::test::call_service(&service, playlist_request).await;
         assert!(playlist_response.status().is_success());
         let playlist_body = actix_web::test::read_body(playlist_response).await;
-        assert!(String::from_utf8_lossy(&playlist_body).contains(&format!("segment_000.ts?token={token}")));
+        assert!(String::from_utf8_lossy(&playlist_body)
+            .contains(&format!("segment_000.ts?token={token}")));
 
         let segment_request = actix_web::test::TestRequest::get()
-            .uri(&format!("/hls/77_123_456/480p/segment_000.ts?token={token}"))
+            .uri(&format!(
+                "/hls/77_123_456/480p/segment_000.ts?token={token}"
+            ))
             .to_request();
         let segment_response = actix_web::test::call_service(&service, segment_request).await;
         assert!(segment_response.status().is_success());

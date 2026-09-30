@@ -708,10 +708,7 @@ mod tests {
     use super::*;
 
     fn test_directory(label: &str) -> PathBuf {
-        std::env::temp_dir().join(format!(
-            "shelf-drive-sync-{label}-{}",
-            uuid::Uuid::new_v4()
-        ))
+        std::env::temp_dir().join(format!("shelf-drive-sync-{label}-{}", uuid::Uuid::new_v4()))
     }
 
     #[test]
