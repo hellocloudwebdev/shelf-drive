@@ -80,10 +80,6 @@ jobs:
         working-directory: app
         run: npm run android:jni:check -- --generated
 
-      - name: Compile Android JVM and instrumentation tests
-        working-directory: app/src-tauri/gen/android
-        run: ./gradlew :app:testUniversalReleaseUnitTest :app:compileUniversalDebugAndroidTestKotlin
-
       - name: Require protected signing for production
         if: env.PRODUCTION_ANDROID_BUILD == 'true'
         env:
@@ -133,6 +129,10 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_shelfDrive_requireReleaseSigning: ${{ env.PRODUCTION_ANDROID_BUILD }}
         run: npm run tauri android build -- --target aarch64 armv7 i686 x86_64 --apk true --aab true --ci
+
+      - name: Compile Android JVM and instrumentation tests
+        working-directory: app/src-tauri/gen/android
+        run: ./gradlew :app:testUniversalReleaseUnitTest :app:compileUniversalDebugAndroidTestKotlin
 
       - name: Build smaller ABI-specific APKs
         working-directory: app/src-tauri/gen/android

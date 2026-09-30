@@ -104,38 +104,62 @@ jobs:
         with:
           script: |
             const tag = `v${process.env.RELEASE_VERSION}`;
-            try {
-              const { data: existingRelease } = await github.rest.repos.getReleaseByTag({
+            // Draft releases are invisible to getReleaseByTag, so match the tag
+            // across all releases (including drafts) and keep exactly one.
+            const allReleases = await github.paginate(github.rest.repos.listReleases, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
+            });
+            const matching = allReleases.filter(release => release.tag_name === tag);
+            let releaseId;
+            if (matching.length > 0) {
+              releaseId = matching[0].id;
+              for (const stale of matching.slice(1)) {
+                await github.rest.repos.deleteRelease({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  release_id: stale.id
+                });
+                console.log(`Deleted duplicate release ${stale.id} for tag ${tag}`);
+              }
+              // Remove assets from a previous attempt so the draft cannot
+              // accumulate stale or partially renamed artifacts.
+              const staleAssets = await github.paginate(github.rest.repos.listReleaseAssets, {
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                tag: tag
+                release_id: releaseId
               });
+              for (const asset of staleAssets) {
+                await github.rest.repos.deleteReleaseAsset({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  asset_id: asset.id
+                });
+              }
+              console.log(`Cleared ${staleAssets.length} stale assets from release ${releaseId}`);
               await github.rest.repos.updateRelease({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                release_id: existingRelease.id,
+                release_id: releaseId,
                 body: process.env.RELEASE_BODY,
                 draft: true
               });
-              console.log(`Updated existing release for tag ${tag} (ID: ${existingRelease.id})`);
-              return existingRelease.id;
-            } catch (err) {
-              if (err.status === 404) {
-                const { data: newRelease } = await github.rest.repos.createRelease({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  tag_name: tag,
-                  name: `Shelf Drive v${process.env.RELEASE_VERSION}`,
-                  body: process.env.RELEASE_BODY,
-                  draft: true,
-                  prerelease: false
-                });
-                console.log(`Created new release for tag ${tag} (ID: ${newRelease.id})`);
-                return newRelease.id;
-              } else {
-                throw err;
-              }
+              console.log(`Reset existing release for tag ${tag} (ID: ${releaseId})`);
+            } else {
+              const { data: newRelease } = await github.rest.repos.createRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag_name: tag,
+                name: `Shelf Drive v${process.env.RELEASE_VERSION}`,
+                body: process.env.RELEASE_BODY,
+                draft: true,
+                prerelease: false
+              });
+              console.log(`Created new release for tag ${tag} (ID: ${newRelease.id})`);
+              releaseId = newRelease.id;
             }
+            return releaseId;
 
   build-tauri:
     needs: create-release
@@ -446,10 +470,13 @@ jobs:
           gh release download "$GITHUB_REF_NAME" --dir release-assets --clobber
           rm -f release-assets/SHA256SUMS.txt release-assets/shelf-drive-source-sbom.cdx.json release-assets/provenance.sigstore.json release-assets/sbom-attestation.sigstore.json release-assets/arch-sbom-attestation.sigstore.json
           version="${GITHUB_REF_NAME#v}"
-          old_installer="release-assets/Shelf Drive_${version}_x64-setup.exe"
-          if [ -f "$old_installer" ]; then
+          old_installer=""
+          for candidate in "release-assets/Shelf.Drive_${version}_x64-setup.exe" "release-assets/Shelf Drive_${version}_x64-setup.exe"; do
+            if [ -f "$candidate" ]; then old_installer="$candidate"; fi
+          done
+          if [ -n "$old_installer" ]; then
             mv "$old_installer" "release-assets/ShelfDrive_${version}_x64-setup.exe"
-            mv "release-assets/Shelf Drive_${version}_x64-setup.exe.sig" "release-assets/ShelfDrive_${version}_x64-setup.exe.sig"
+            mv "${old_installer}.sig" "release-assets/ShelfDrive_${version}_x64-setup.exe.sig"
             jq --arg url "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/ShelfDrive_${version}_x64-setup.exe" \
               '.platforms["windows-x86_64"].url = $url' release-assets/latest.json > release-assets/latest.json.tmp
             mv release-assets/latest.json.tmp release-assets/latest.json
