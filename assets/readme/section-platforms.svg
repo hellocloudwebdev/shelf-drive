@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 130" width="1200" height="130" role="img" aria-labelledby="plat-title plat-desc">
+  <title id="plat-title">Cross-Platform</title>
+  <desc id="plat-desc">Section banner for Cross-Platform: Windows, macOS, Linux, Android, TV</desc>
+
+  <defs>
+    <linearGradient id="plat-bg" x1="0" y1="0" x2="1200" y2="130" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0b1220"/>
+      <stop offset="100%" stop-color="#121b2e"/>
+    </linearGradient>
+
+    <linearGradient id="plat-glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4FC3F7" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#4FC3F7" stop-opacity="0.04"/>
+    </linearGradient>
+
+    <radialGradient id="plat-glow" cx="100" cy="65" r="160" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4FC3F7" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#4FC3F7" stop-opacity="0"/>
+    </radialGradient>
+
+    <clipPath id="plat-clip">
+      <rect width="1200" height="130" rx="12"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#plat-clip)">
+    <!-- Background -->
+    <rect width="1200" height="130" fill="url(#plat-bg)"/>
+
+    <!-- Glow -->
+    <ellipse cx="100" cy="65" rx="180" ry="100" fill="url(#plat-glow)"/>
+
+    <!-- Frosted glass panel -->
+    <rect x="16" y="12" width="1168" height="106" rx="10" fill="url(#plat-glass)" stroke="#4FC3F7" stroke-opacity="0.15" stroke-width="1"/>
+
+    <!-- Device silhouettes decorative motif (left side) -->
+    <g opacity="0.35" transform="translate(38, 28)">
+      <!-- Desktop monitor -->
+      <rect x="0" y="8" width="28" height="20" rx="2" fill="none" stroke="#4FC3F7" stroke-width="1.2"/>
+      <line x1="10" y1="28" x2="18" y2="28" stroke="#4FC3F7" stroke-width="1.2"/>
+      <line x1="14" y1="28" x2="14" y2="33" stroke="#4FC3F7" stroke-width="1.2"/>
+      <line x1="8" y1="33" x2="20" y2="33" stroke="#4FC3F7" stroke-width="1.2" stroke-linecap="round"/>
+
+      <!-- Laptop -->
+      <rect x="36" y="16" width="22" height="14" rx="1.5" fill="none" stroke="#4FC3F7" stroke-width="1.2"/>
+      <path d="M32 30 L36 30 L36 31 L60 31 L60 30 L64 30 L64 33 L32 33 Z" fill="none" stroke="#4FC3F7" stroke-width="1.2" stroke-linejoin="round"/>
+
+      <!-- Phone -->
+      <rect x="14" y="42" width="14" height="24" rx="2.5" fill="none" stroke="#4FC3F7" stroke-width="1.2"/>
+      <line x1="19" y1="61" x2="23" y2="61" stroke="#4FC3F7" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
+      <rect x="14" y="42" width="14" height="24" rx="2.5" fill="#4FC3F7" fill-opacity="0.10"/>
+
+      <!-- TV -->
+      <rect x="38" y="42" width="30" height="20" rx="2" fill="none" stroke="#4FC3F7" stroke-width="1.2"/>
+      <rect x="38" y="42" width="30" height="20" rx="2" fill="#4FC3F7" fill-opacity="0.08"/>
+      <line x1="48" y1="62" x2="58" y2="62" stroke="#4FC3F7" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="53" y1="62" x2="53" y2="66" stroke="#4FC3F7" stroke-width="1"/>
+    </g>
+
+    <!-- Section number -->
+    <text x="140" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="52" font-weight="800" fill="#4FC3F7" opacity="0.30" letter-spacing="-2">02</text>
+
+    <!-- Title -->
+    <text x="220" y="62" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="700" fill="#e9eef8">Cross-Platform</text>
+
+    <!-- Subtitle -->
+    <text x="220" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="400" fill="#e9eef8" opacity="0.55">Windows · macOS · Linux · Android · TV</text>
+
+    <!-- Right-side decorative dots -->
+    <g opacity="0.15" fill="#4FC3F7">
+      <circle cx="1080" cy="45" r="2"/>
+      <circle cx="1100" cy="45" r="2"/>
+      <circle cx="1120" cy="45" r="2"/>
+      <circle cx="1140" cy="45" r="2"/>
+      <circle cx="1080" cy="65" r="2"/>
+      <circle cx="1100" cy="65" r="2"/>
+      <circle cx="1120" cy="65" r="2"/>
+      <circle cx="1140" cy="65" r="2"/>
+      <circle cx="1080" cy="85" r="2"/>
+      <circle cx="1100" cy="85" r="2"/>
+      <circle cx="1120" cy="85" r="2"/>
+      <circle cx="1140" cy="85" r="2"/>
+    </g>
+
+    <!-- Bottom accent bar -->
+    <rect x="220" y="118" width="60" height="2" rx="1" fill="#4FC3F7" opacity="0.40"/>
+  </g>
+</svg>

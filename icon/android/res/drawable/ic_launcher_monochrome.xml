@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Monochrome (Android 13+ themed icons): folder silhouette with tab and the
+     two layered-sheet gaps, positioned/scaled like the foreground artwork.
+     Alpha-only artwork; the launcher applies its tint. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M35.06,33.94 A2.9,2.9 0 0 1 37.96,31.04 H46.45 A2.9,2.9 0 0 1 49.35,33.94 C49.35,34.9 50.8,35.82 53.2,35.82 H69.2 A4.91,4.91 0 0 1 74.11,40.73 V66.15 A8.52,8.52 0 0 1 65.59,74.67 H33.75 A3.6,3.6 0 0 1 30.15,71.07 V40.73 A4.91,4.91 0 0 1 35.06,35.82 Z M31.6,51.66 V54.28 H64.54 A1.31,1.31 0 0 0 64.54,51.66 Z M31.6,62.34 V64.96 H55.34 A1.31,1.31 0 0 0 55.34,62.34 Z" />
+</vector>

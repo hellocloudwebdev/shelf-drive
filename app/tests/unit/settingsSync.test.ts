@@ -1,0 +1,25 @@
+import { describe, expect, it } from 'vitest';
+import { DEFAULT_SETTINGS } from '../../src/config/defaultSettings';
+import { pickSyncableSettings, SYNCABLE_SETTING_KEYS } from '../../src/services/settingsSync';
+
+describe('settings sync allowlist', () => {
+  it('includes portable preferences and excludes secrets and device state', () => {
+    const syncable = pickSyncableSettings({
+      ...DEFAULT_SETTINGS,
+      language: 'ja',
+      proxyPassword: 'never-sync-this',
+      crashReportingConsentSeen: true,
+    });
+
+    expect(syncable.language).toBe('ja');
+    expect(syncable.fileSortField).toBe('name');
+    expect(syncable.fileSortDirection).toBe('asc');
+    expect(syncable).not.toHaveProperty('proxyPassword');
+    expect(syncable).not.toHaveProperty('proxyUsername');
+    expect(syncable).not.toHaveProperty('crashReportingConsentSeen');
+    expect(syncable).not.toHaveProperty('telegramSettingsSyncEnabled');
+    expect(syncable).not.toHaveProperty('backgroundModeEnabled');
+    expect(syncable).not.toHaveProperty('notificationsEnabled');
+    expect(Object.keys(syncable)).toEqual([...SYNCABLE_SETTING_KEYS]);
+  });
+});

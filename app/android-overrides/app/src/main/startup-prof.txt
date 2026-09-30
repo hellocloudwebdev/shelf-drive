@@ -1,0 +1,3 @@
+# Startup Profile rules guide R8 class layout for the application entry path.
+Lcom/hellocloudweb/shelfdrive/ShelfDriveApplication;
+Lcom/hellocloudweb/shelfdrive/MainActivity;

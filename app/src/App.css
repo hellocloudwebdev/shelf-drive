@@ -1,0 +1,1174 @@
+@import "@fontsource-variable/inter";
+@import "tailwindcss";
+
+/* stylelint-disable at-rule-no-unknown */
+/* Apple-inspired semantic theme. Neutral triad (black / pale gray / white) with
+   a single blue accent family. Legacy telegram-* tokens remain as aliases so
+   stored custom themes and incrementally migrated components keep working. */
+@theme {
+  --radius-control: 1rem;
+  --radius-container: 1.125rem;
+  --radius-overlay: 1.25rem;
+  --text-ui: 0.8125rem;
+  --text-ui--line-height: 1.125rem;
+  --text-metadata: 0.75rem;
+  --text-metadata--line-height: 1rem;
+  --text-badge: 0.6875rem;
+  --text-badge--line-height: 0.875rem;
+  --text-app-title: 0.9375rem;
+  --text-app-title--line-height: 1.25rem;
+  /* Frosted cyan glass palette — blue-black night canvas with an ice-cyan
+     accent (#4FC3F7, 9.1:1 on canvas) for text/icons; filled controls keep the
+     brand cyan with readable ink via accent-contrast. Cyan stays as the single
+     refraction accent; violet/pink tokens survive as cyan/ice aliases. */
+  --color-app-canvas: #0b1220;
+  --color-app-sidebar: #0d1526;
+  --color-app-surface: #121b2e;
+  --color-app-surface-raised: #17223a;
+  --color-app-surface-sunken: #070d18;
+  --color-app-accent: #4fc3f7;
+  --color-app-accent-hover: #7dd3fc;
+  --color-app-accent-soft: rgba(34, 193, 242, 0.16);
+  --color-app-accent-contrast: #0b1220;
+  --color-app-text: #e9eef8;
+  --color-app-text-secondary: #8f9db8;
+  --color-app-text-tertiary: #8492ae;
+  --color-app-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-app-border: rgba(255, 255, 255, 0.14);
+  --color-app-border-strong: rgba(255, 255, 255, 0.22);
+  --color-app-hover: rgba(255, 255, 255, 0.07);
+  --color-app-selected: rgba(79, 195, 247, 0.2);
+  --color-app-overlay: rgba(5, 10, 22, 0.68);
+  --color-app-success: #34d399;
+  --color-app-warning: #fbbf24;
+  --color-app-danger: #f2555a;
+  --color-app-info: #67e8f9;
+  --color-app-accent-violet: #4fc3f7;
+  --color-app-accent-cyan: #67e8f9;
+  --color-app-accent-pink: #a5c8f0;
+
+  --color-telegram-bg: var(--color-app-canvas);
+  --color-telegram-surface: var(--color-app-surface);
+  --color-telegram-primary: var(--color-app-accent);
+  --color-telegram-secondary: var(--color-app-info);
+  --color-telegram-text: var(--color-app-text);
+  --color-telegram-subtext: var(--color-app-text-secondary);
+  --color-telegram-border: var(--color-app-border);
+  --color-telegram-hover: var(--color-app-hover);
+  --color-telegram-glass-bg: var(--color-app-surface);
+  --color-telegram-glass-border: var(--color-app-text);
+}
+
+/* Light Theme Overrides — the flagship: almost-white ice canvas with airy
+   cyan atmosphere, near-black ink, and deep cyan #0E7490 as the single action
+   color (5.2:1 on canvas, white-on-fill 5.4:1). Cool gray-blue borders and
+   soft blue-tinted shadows keep surfaces floating. */
+:root.light {
+  --color-app-canvas: #f8fafd;
+  --color-app-sidebar: #eff4fa;
+  --color-app-surface: #f1f5fb;
+  --color-app-surface-raised: #ffffff;
+  --color-app-surface-sunken: #e7eef7;
+  --color-app-accent: #0e7490;
+  --color-app-accent-hover: #155e75;
+  --color-app-accent-soft: rgba(14, 116, 144, 0.1);
+  --color-app-accent-contrast: #ffffff;
+  --color-app-text: #111827;
+  --color-app-text-secondary: rgba(17, 24, 39, 0.62);
+  --color-app-text-tertiary: rgba(17, 24, 39, 0.62);
+  --color-app-border-subtle: rgba(23, 48, 99, 0.06);
+  --color-app-border: #dde5ef;
+  --color-app-border-strong: #a8b7cd;
+  --color-app-hover: rgba(23, 48, 99, 0.05);
+  --color-app-selected: rgba(14, 116, 144, 0.1);
+  --color-app-overlay: rgba(15, 28, 52, 0.45);
+  --color-app-success: #16a34a;
+  --color-app-warning: #d97706;
+  --color-app-danger: #d93a3f;
+  --color-app-info: #0891b2;
+  --color-app-accent-violet: #0e7490;
+  --color-app-accent-pink: #6b9bd1;
+
+  --color-telegram-bg: var(--color-app-canvas);
+  --color-telegram-surface: var(--color-app-surface);
+  --color-telegram-primary: var(--color-app-accent);
+  --color-telegram-secondary: var(--color-app-info);
+  --color-telegram-text: var(--color-app-text);
+  --color-telegram-subtext: var(--color-app-text-secondary);
+  --color-telegram-border: var(--color-app-border);
+  --color-telegram-hover: var(--color-app-hover);
+  --color-telegram-glass-bg: var(--color-app-surface);
+  --color-telegram-glass-border: var(--color-app-text);
+}
+
+:root {
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --metric-control-inline: 1.75rem;
+  --metric-control-compact: 1.875rem;
+  --metric-control-standard: 2rem;
+  --metric-control-prominent: 2.25rem;
+  --metric-control-touch: 2.75rem;
+  --metric-toolbar-desktop: 3rem;
+  --metric-sidebar-collapsed: 3.25rem;
+  --metric-sidebar-expanded: 15rem;
+  --metric-navigation-row: 2rem;
+  --metric-list-row: 2.5rem;
+  --metric-grid-gap: 0.75rem;
+  --radius-control: 1rem;
+  --radius-container: 1.125rem;
+  --radius-overlay: 1.25rem;
+  --shadow-raised: 0 1px 2px rgba(23, 48, 99, 0.06), 0 8px 24px rgba(23, 48, 99, 0.08);
+  --shadow-floating: 0 2px 8px rgba(23, 48, 99, 0.08), 0 24px 64px rgba(11, 28, 62, 0.22);
+  --motion-fast: 120ms;
+  --motion-standard: 160ms;
+  --motion-slow: 220ms;
+  --ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1);
+
+  /* ── Liquid glass system ────────────────────────────────────────
+     Translucent surfaces with backdrop blur communicate hierarchy:
+     navigation, sheets, search and floating controls sit on glass;
+     ordinary content rows stay opaque and readable. */
+  --glass-blur: 22px;
+  --glass-bg: rgba(20, 30, 45, 0.66);
+  --glass-bg-strong: rgba(22, 32, 50, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-highlight: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 2px 8px rgba(3, 8, 20, 0.42), 0 16px 48px rgba(3, 10, 26, 0.5);
+  --accent-glow: rgba(34, 193, 242, 0.24);
+  --accent-gradient: linear-gradient(135deg, rgba(125, 211, 252, 0.9) 0%, rgba(14, 165, 233, 0.9) 100%);
+  --refraction-tint: linear-gradient(
+    135deg,
+    rgba(125, 211, 252, 0.1) 0%,
+    rgba(34, 193, 242, 0.07) 38%,
+    rgba(103, 232, 249, 0.06) 72%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+}
+
+:root.light {
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-bg-strong: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.7);
+  --glass-highlight: rgba(255, 255, 255, 0.95);
+  --glass-shadow: 0 2px 6px rgba(35, 70, 120, 0.05), 0 10px 35px rgba(35, 70, 120, 0.1);
+  --accent-glow: rgba(34, 193, 242, 0.22);
+}
+
+/* Atmospheric canvas: an extremely subtle ice-cyan wash behind the app.
+   Fixed so scrolling never repaints the gradient. Light mode reads as
+   almost-white with faint sky glows; dark mode is blue-black with
+   deep cyan radial light. */
+.atmospheric-canvas {
+  background:
+    radial-gradient(52rem 36rem at 8% -12%, var(--atmosphere-1, rgba(34, 193, 242, 0.08)), transparent 62%),
+    radial-gradient(44rem 32rem at 108% 4%, var(--atmosphere-2, rgba(125, 211, 252, 0.05)), transparent 60%),
+    radial-gradient(40rem 30rem at 50% 118%, var(--atmosphere-3, rgba(34, 193, 242, 0.06)), transparent 64%),
+    var(--color-app-canvas);
+}
+
+:root.light .atmospheric-canvas {
+  --atmosphere-1: rgba(34, 193, 242, 0.05);
+  --atmosphere-2: rgba(125, 211, 252, 0.07);
+  --atmosphere-3: rgba(34, 193, 242, 0.06);
+}
+
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter Variable", "Segoe UI Variable", "Segoe UI", Inter, Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: var(--color-telegram-bg);
+  color: var(--color-telegram-text);
+  transition: background-color var(--motion-slow) var(--ease-standard), color var(--motion-standard) var(--ease-standard);
+}
+
+.desktop-shell {
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+}
+
+.type-app-title,
+.text-app-title {
+  font-size: 0.9375rem;
+  line-height: 1.25rem;
+  letter-spacing: -0.01em;
+}
+
+.type-ui,
+.text-ui {
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+}
+
+.type-metadata,
+.text-metadata {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.type-badge,
+.text-badge {
+  font-size: 0.6875rem;
+  line-height: 0.875rem;
+}
+
+@layer base {
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  /* Layered so component-level utilities (e.g. focus-within search fields)
+     can override the default focus outline. */
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid var(--color-app-accent);
+    outline-offset: 2px;
+  }
+}
+
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+}
+
+.quiet-surface {
+  background: var(--color-app-surface);
+  border: 1px solid var(--color-app-border-subtle);
+  border-radius: var(--radius-container);
+}
+
+.quiet-raised {
+  background: var(--color-app-surface-raised);
+  border: 1px solid var(--color-app-border);
+  border-radius: var(--radius-overlay);
+  box-shadow: var(--shadow-raised);
+}
+
+/* Shared desktop header rows keep dividers continuous across both columns. */
+.desktop-chrome-row {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: var(--metric-toolbar-desktop);
+  min-height: var(--metric-toolbar-desktop);
+  padding-inline: var(--space-3);
+  border-bottom: 1px solid var(--color-app-border-subtle);
+}
+
+/* Collapsed rail header: logo and expand arrow stay on one row, centered,
+   with slim padding that fits the 64px rail. */
+.desktop-chrome-row.sidebar-header-rail {
+  padding-inline: 0.375rem;
+}
+
+.quiet-toolbar {
+  background: color-mix(in srgb, var(--color-app-surface) 88%, transparent);
+  border-color: var(--color-app-border-subtle);
+  backdrop-filter: blur(18px) saturate(120%);
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+}
+
+.quiet-control {
+  border-radius: var(--radius-control);
+  transition: color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-fast) var(--ease-standard),
+    filter var(--motion-fast) var(--ease-standard),
+    opacity var(--motion-fast) var(--ease-standard);
+}
+
+.quiet-control:hover:not(:disabled) {
+  background: var(--color-app-hover);
+}
+
+.quiet-control:active:not(:disabled) {
+  filter: brightness(0.96);
+}
+
+.quiet-menu-item {
+  display: flex;
+  min-height: var(--metric-control-standard);
+  width: 100%;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: var(--radius-control);
+  padding-inline: 0.625rem;
+  color: var(--color-app-text);
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+  text-align: start;
+  transition: color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard);
+}
+
+.quiet-menu-item:hover:not(:disabled) {
+  background: var(--color-app-hover);
+}
+
+.quiet-control.sidebar-sync-action {
+  background: transparent;
+  border: 1px solid var(--color-app-border);
+}
+
+.quiet-control.sidebar-sync-action:hover:not(:disabled) {
+  background: var(--color-app-hover);
+  border-color: var(--color-app-border-strong);
+}
+
+/* Primary commerce-style action: solid accent fill, capsule silhouette. */
+.quiet-control.toolbar-upload-action {
+  background: var(--color-app-accent);
+  border-color: transparent;
+  color: var(--color-app-accent-contrast);
+  border-radius: 999px;
+  padding-inline: 0.875rem;
+  font-weight: 600;
+}
+
+.quiet-control.toolbar-upload-action:hover:not(:disabled) {
+  background: var(--color-app-accent-hover);
+  border-color: transparent;
+}
+
+.quiet-control.sidebar-logout-action {
+  background: transparent;
+  border: 1px solid var(--color-app-border);
+}
+
+.quiet-control.sidebar-logout-action:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-app-danger) 10%, transparent);
+  border-color: color-mix(in srgb, var(--color-app-danger) 38%, var(--color-app-border));
+}
+
+.quiet-menu {
+  background: color-mix(in srgb, var(--color-app-surface-raised) 94%, transparent);
+  border: 1px solid var(--color-app-border);
+  border-radius: var(--radius-container);
+  box-shadow: var(--shadow-floating);
+  backdrop-filter: blur(20px) saturate(120%);
+  -webkit-backdrop-filter: blur(20px) saturate(120%);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Calm onboarding canvas shared by authentication screens. Apple keeps these
+   scenes solid; contrast does the separating, not gradients. */
+.auth-gradient {
+  background: var(--color-app-canvas);
+}
+
+:root.light .auth-gradient {
+  background: var(--color-app-canvas);
+}
+
+/* Glassmorphism Utilities - Dark */
+.glass {
+  background: color-mix(in srgb, var(--color-telegram-glass-bg) 70%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid color-mix(in srgb, var(--color-telegram-glass-border) 8%, transparent);
+}
+
+:root.light .glass {
+  background: color-mix(in srgb, var(--color-telegram-glass-bg) 85%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-telegram-glass-border) 8%, transparent);
+}
+
+/* Auth-specific card - solid elevated surface with hairline containment */
+.auth-glass {
+  background: var(--color-app-surface-raised);
+  border: 1px solid var(--color-app-border);
+  box-shadow: var(--shadow-floating);
+}
+
+:root.light .auth-glass {
+  background: color-mix(in srgb, var(--color-app-surface-raised) 96%, transparent);
+  border-color: var(--color-app-border);
+  color: var(--color-app-text);
+}
+
+/* Force dark text inside auth-glass in light mode */
+:root.light .auth-glass .text-white {
+  color: #1a1a1a;
+}
+
+:root.light .auth-glass .text-white\/60 {
+  color: rgba(26, 26, 26, 0.7);
+}
+
+:root.light .auth-glass .text-gray-400 {
+  color: #555;
+}
+
+:root.light .auth-glass .text-blue-200 {
+  color: #1e40af;
+}
+
+:root.light .auth-glass .placeholder-gray-600::placeholder {
+  color: #9ca3af;
+}
+
+:root.light .auth-glass input {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #1a1a1a;
+}
+
+/* Auth form icons - Direct overrides for maximum visibility */
+.auth-form-icon {
+  color: #ffffff !important;
+  /* Default (Dark Mode): Pure White */
+  opacity: 1 !important;
+  z-index: 20;
+}
+
+/* Light Mode Override */
+:root.light .auth-form-icon {
+  color: #000000 !important;
+  /* Light Mode: Pure Black */
+  opacity: 0.8 !important;
+}
+
+.glass-input {
+  background: color-mix(in srgb, var(--color-telegram-glass-bg) 60%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-telegram-glass-border) 10%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+:root.light .glass-input {
+  background: color-mix(in srgb, var(--color-telegram-glass-bg) 90%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-telegram-glass-border) 15%, transparent);
+}
+
+/* ── Mobile liquid-glass components ─────────────────────────────
+   One shared language for nav, sheets, search, chips and floating
+   controls. Layers: translucent fill → blur+saturate → hairline
+   light border → top highlight → soft blue shadow. */
+
+.glass-surface {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight);
+}
+
+.glass-strong {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(calc(var(--glass-blur) + 4px)) saturate(160%);
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) + 4px)) saturate(160%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight);
+}
+
+/* Floating bottom navigation: pill silhouette with a faint spectral
+   tint across the top edge so it reads as glass, not gray plastic. */
+.glass-nav {
+  position: relative;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(calc(var(--glass-blur) + 6px)) saturate(170%);
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) + 6px)) saturate(170%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), inset 0 1px 0 var(--glass-highlight);
+  overflow: hidden;
+}
+
+.glass-nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--refraction-tint);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Active navigation capsule: soft tinted glass behind the item — a whisper of
+   accent over the frosted pill, plus an illuminated top hairline and blue glow. */
+/* Selected nav pill: the same icy glass as the upload FAB — bright cyan
+   core glowing to a pale rim, white edge, inner gloss, floating shadow.
+   Content on it uses a deep cyan ink (readable on the pale lower zone). */
+.glass-nav-capsule {
+  background: radial-gradient(
+    120% 145% at 50% 40%,
+    #3fc0f2 0%,
+    #68ccf6 30%,
+    #9fdffb 58%,
+    #cfeffd 82%,
+    #e6f8ff 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.95),
+    inset 0 -6px 14px rgba(255, 255, 255, 0.4),
+    0 8px 22px rgba(66, 176, 236, 0.32);
+}
+
+/* Bottom sheets: strong glass so content behind stays legible. */
+.glass-sheet {
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(calc(var(--glass-blur) + 6px)) saturate(170%);
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) + 6px)) saturate(170%);
+  border: 1px solid var(--glass-border);
+  border-bottom: 0;
+  border-radius: 1.75rem 1.75rem 0 0;
+  box-shadow: 0 -12px 48px rgba(3, 10, 26, 0.36), inset 0 1px 0 var(--glass-highlight);
+  position: relative;
+  overflow: hidden;
+}
+
+:root.light .glass-sheet {
+  box-shadow: 0 -12px 48px rgba(35, 70, 120, 0.16), inset 0 1px 0 var(--glass-highlight);
+}
+
+.glass-sheet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--refraction-tint);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Search field and filter chips. */
+.glass-field {
+  background: var(--glass-bg);
+  backdrop-filter: blur(calc(var(--glass-blur) - 4px)) saturate(140%);
+  -webkit-backdrop-filter: blur(calc(var(--glass-blur) - 4px)) saturate(140%);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 1px 3px rgba(15, 40, 82, 0.1);
+}
+
+:root.light .glass-field {
+  background: rgba(255, 255, 255, 0.66);
+}
+
+.glass-field:focus-within {
+  border-color: color-mix(in srgb, var(--color-app-accent) 45%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-app-accent) 14%, transparent);
+}
+
+.glass-chip {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid var(--glass-border);
+  transition: background-color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-standard);
+}
+
+.glass-chip:active {
+  transform: scale(0.96);
+}
+
+.glass-chip[data-active="true"] {
+  background: color-mix(in srgb, var(--color-app-accent) 12%, transparent);
+  border-color: color-mix(in srgb, var(--color-app-accent) 22%, transparent);
+  color: var(--color-app-accent);
+}
+
+/* Floating upload button: the one saturated gradient element. */
+/* Icy frosted capsule upload button: bright cyan-blue core glowing to a
+   pale rim, soft white edge, inner gloss and a floating blue shadow. */
+.glass-fab {
+  background: radial-gradient(
+    120% 145% at 50% 40%,
+    #3fc0f2 0%,
+    #68ccf6 30%,
+    #9fdffb 58%,
+    #cfeffd 82%,
+    #e6f8ff 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.95),
+    inset 0 -8px 16px rgba(255, 255, 255, 0.4),
+    0 10px 28px rgba(66, 176, 236, 0.38),
+    0 4px 10px rgba(66, 176, 236, 0.24);
+  transition: transform var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-fast) var(--ease-standard),
+    filter var(--motion-fast) var(--ease-standard);
+}
+
+.glass-fab:active {
+  transform: scale(0.92);
+  filter: brightness(1.08);
+}
+
+/* Sliding active capsule in the bottom nav. */
+.nav-capsule {
+  position: absolute;
+  top: 0.1875rem;
+  bottom: 0.1875rem;
+  border-radius: 999px;
+  transition: transform 220ms var(--ease-standard), opacity 220ms var(--ease-standard);
+  will-change: transform;
+}
+
+@keyframes sheet-rise {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes sheet-backdrop-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-sheet-backdrop {
+  animation: sheet-backdrop-in 200ms var(--ease-standard) both;
+}
+
+.animate-sheet-rise {
+  animation: sheet-rise 300ms cubic-bezier(0.32, 0.72, 0.24, 1) both;
+}
+
+/* Gentle press feedback shared by mobile rows. */
+.press-row {
+  transition: transform 140ms var(--ease-standard), background-color 140ms var(--ease-standard);
+}
+
+.press-row:active {
+  transform: scale(0.985);
+}
+
+/* Shared phase 5–7 surfaces. These classes keep auth, mobile sheets and
+   viewers on the same theme adapters without changing their controllers. */
+.auth-label {
+  display: block;
+  margin-bottom: 0.375rem;
+  color: var(--color-app-text-secondary);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 0.875rem;
+}
+
+.auth-input {
+  width: 100%;
+  height: 2.75rem;
+  padding-inline: 2.5rem 0.75rem;
+  border: 1px solid var(--color-app-border);
+  border-radius: var(--radius-control);
+  background: color-mix(in srgb, var(--color-app-surface-sunken) 48%, transparent);
+  color: var(--color-app-text);
+  font-size: 0.8125rem;
+  line-height: 1.125rem;
+  outline: none;
+  transition: border-color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard);
+}
+
+.auth-input::placeholder {
+  color: var(--color-app-text-tertiary);
+}
+
+.auth-input:focus {
+  border-color: color-mix(in srgb, var(--color-app-accent) 65%, var(--color-app-border));
+  background: color-mix(in srgb, var(--color-app-surface-sunken) 62%, transparent);
+}
+
+.auth-input-icon {
+  position: absolute;
+  inset-inline-start: 0.75rem;
+  top: 50%;
+  z-index: 1;
+  width: 1rem;
+  height: 1rem;
+  transform: translateY(-50%);
+  color: var(--color-app-text-tertiary);
+  pointer-events: none;
+}
+
+.auth-primary-action {
+  display: inline-flex;
+  width: 100%;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-inline: 1rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--color-app-accent);
+  color: var(--color-app-accent-contrast);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.125rem;
+}
+
+.auth-primary-action:hover:not(:disabled) {
+  background: var(--color-app-accent-hover);
+}
+
+.auth-secondary-action {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  border-radius: var(--radius-control);
+  color: var(--color-app-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1rem;
+}
+
+.auth-secondary-action:hover:not(:disabled) {
+  color: var(--color-app-text);
+  background: var(--color-app-hover);
+}
+
+.mobile-sheet {
+  width: 100%;
+  max-width: 32rem;
+  max-height: min(78vh, 44rem);
+  padding: 1rem;
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  border: 1px solid var(--color-app-border);
+  border-bottom: 0;
+  border-radius: var(--radius-overlay) var(--radius-overlay) 0 0;
+  background: var(--color-app-surface-raised);
+  color: var(--color-app-text);
+  box-shadow: var(--shadow-floating);
+}
+
+.mobile-sheet-handle {
+  width: 2rem;
+  height: 0.1875rem;
+  border-radius: 999px;
+  background: var(--color-app-border-strong);
+}
+
+.viewer-overlay {
+  background: color-mix(in srgb, #000000 90%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.viewer-panel {
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, #ffffff 12%, transparent);
+  border-radius: var(--radius-container);
+  background: #0a0a0b;
+  box-shadow: var(--shadow-floating);
+}
+
+.viewer-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid color-mix(in srgb, #ffffff 12%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, #1d1d1f 78%, transparent);
+  color: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.viewer-control,
+.viewer-navigation {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  color: rgba(255, 255, 255, 0.72);
+  transition: color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard);
+}
+
+.viewer-control {
+  width: 2rem;
+  height: 2rem;
+}
+
+.viewer-navigation {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-color: color-mix(in srgb, #ffffff 10%, transparent);
+  background: color-mix(in srgb, #1d1d1f 68%, transparent);
+  border-radius: 50%;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.viewer-control:hover:not(:disabled),
+.viewer-navigation:hover:not(:disabled) {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+@media (pointer: coarse) {
+  .image-viewer-toolbar .viewer-control {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .image-viewer-toolbar {
+    gap: 0.125rem;
+  }
+}
+
+.file-card-container {
+  container-type: inline-size;
+}
+
+@container (max-width: 139px) {
+  .file-card-info {
+    min-height: 2.25rem;
+    padding: 0.5rem;
+  }
+
+  .file-card-metadata {
+    display: none;
+  }
+
+  .file-card-icon {
+    bottom: 2.25rem;
+    padding: 0.5rem;
+  }
+
+  .file-card-icon > svg,
+  .file-card-icon > div {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .file-card-actions {
+    max-width: calc(100% - 2.5rem);
+  }
+}
+
+/* Custom Scrollbar - Dark */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(41, 151, 255, 0.55);
+}
+
+/* Custom Scrollbar - Light */
+:root.light ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+:root.light ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 113, 227, 0.45);
+}
+
+/* Light mode specific overrides for common patterns */
+:root.light .bg-telegram-bg {
+  background-color: var(--color-telegram-bg);
+}
+
+:root.light .bg-telegram-surface {
+  background-color: var(--color-telegram-surface);
+}
+
+:root.light .border-white\/5,
+:root.light .border-white\/10 {
+  border-color: var(--color-telegram-border);
+}
+
+:root.light .bg-white\/5,
+:root.light .hover\:bg-white\/5:hover {
+  background-color: var(--color-telegram-hover);
+}
+
+:root.light .bg-white\/10,
+:root.light .hover\:bg-white\/10:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+:root.light .bg-black\/20,
+:root.light .bg-black\/30,
+:root.light .bg-black\/50 {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+/* File card action buttons - more visible in light mode */
+:root.light .file-action-btn {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  color: white !important;
+}
+
+:root.light .file-action-btn:hover {
+  background-color: var(--color-telegram-primary) !important;
+}
+
+/* Invert text colors for light mode where needed */
+:root.light .text-telegram-text {
+  color: var(--color-telegram-text);
+}
+
+:root.light .text-telegram-subtext {
+  color: var(--color-telegram-subtext);
+}
+
+/* Card shadows for light mode */
+:root.light .shadow-2xl {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+/* Input styling for light mode */
+:root.light input,
+:root.light textarea {
+  background-color: var(--color-app-surface-raised);
+  border-color: var(--color-app-border);
+  color: var(--color-app-text);
+}
+
+:root.light input::placeholder,
+:root.light textarea::placeholder {
+  color: var(--color-app-text-tertiary);
+}
+
+:root.light input:focus,
+:root.light textarea:focus {
+  border-color: var(--color-app-accent);
+}
+
+:root.light input.bg-transparent {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+/* Search field: the pill's own focus ring (focus-within border + halo) is the
+   single focus indicator. These unlayered overrides out-rank the global
+   focus-visible outline and light-mode input chrome so no rectangular line or
+   fill can ever appear inside the capsule. */
+label.search-field input[type="search"] {
+  background: transparent;
+  border: 0;
+  outline: none;
+}
+
+label.search-field input[type="search"]:focus,
+label.search-field input[type="search"]:focus-visible {
+  outline: none;
+  border: 0;
+  background: transparent;
+}
+
+/* Glass search field ships its own clear button — suppress the native
+   WebKit search-cancel control so two ✕ buttons never render. */
+.glass-field input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* ── Performance Mode ──────────────────────────────────────── */
+/* Disables GPU-heavy effects for WebKitGTK / older hardware.  */
+/* Toggle via Settings → General → Performance Mode.           */
+
+.performance-mode *,
+.performance-mode *::before,
+.performance-mode *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+.performance-mode {
+  /* Kill backdrop-filter completely */
+  --tw-backdrop-blur: none !important;
+}
+
+.performance-mode .backdrop-blur-sm,
+.performance-mode .backdrop-blur,
+.performance-mode .backdrop-blur-md,
+.performance-mode .backdrop-blur-lg,
+.performance-mode .backdrop-blur-xl,
+.performance-mode .backdrop-blur-2xl,
+.performance-mode .backdrop-blur-3xl {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.performance-mode .glass,
+.performance-mode .auth-glass,
+.performance-mode .glass-input,
+.performance-mode .glass-surface,
+.performance-mode .glass-strong,
+.performance-mode .glass-nav,
+.performance-mode .glass-sheet,
+.performance-mode .glass-field,
+.performance-mode .glass-chip,
+.performance-mode .quiet-toolbar,
+.performance-mode .quiet-menu,
+.performance-mode .viewer-overlay,
+.performance-mode .viewer-toolbar,
+.performance-mode .viewer-navigation {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Glass fills become near-opaque so text stays legible without blur. */
+.performance-mode .glass-nav,
+.performance-mode .glass-sheet,
+.performance-mode .glass-strong {
+  background: var(--color-app-surface-raised) !important;
+}
+
+.performance-mode .glass-surface,
+.performance-mode .glass-field,
+.performance-mode .glass-chip {
+  background: var(--color-app-surface) !important;
+}
+
+/* Kill heavy shadows */
+.performance-mode .shadow-lg,
+.performance-mode .shadow-xl,
+.performance-mode .shadow-2xl,
+.performance-mode .drop-shadow-lg {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
+  filter: none !important;
+}
+
+/* Reduce paint cost */
+.performance-mode .animate-pulse,
+.performance-mode .animate-spin {
+  animation: none !important;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* ── Android / Google TV ten-foot interface ───────────────── */
+/* Applied only after the native Android bridge confirms TV UI mode. */
+.tv-mode body {
+  cursor: none;
+  overscroll-behavior: none;
+}
+
+.tv-shell header {
+  min-height: 5.5rem;
+  padding: 1.25rem 3rem;
+}
+
+.tv-shell header h1 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.tv-shell main {
+  padding: 1.5rem 3rem 14rem;
+  scroll-padding: 7rem 0 10rem;
+}
+
+.tv-shell button,
+.tv-shell a[href],
+.tv-shell [role="button"],
+.tv-shell input,
+.tv-shell select,
+.tv-shell textarea {
+  min-height: 3rem;
+}
+
+.tv-shell .text-xs,
+.tv-shell .text-\[10px\] {
+  font-size: 1rem !important;
+  line-height: 1.5rem !important;
+}
+
+.tv-shell .text-sm {
+  font-size: 1.125rem !important;
+  line-height: 1.75rem !important;
+}
+
+.tv-shell button:focus-visible,
+.tv-shell a[href]:focus-visible,
+.tv-shell [role="button"]:focus-visible,
+.tv-shell input:focus-visible,
+.tv-shell select:focus-visible,
+.tv-shell textarea:focus-visible {
+  outline: 4px solid var(--color-telegram-primary, #2997ff) !important;
+  outline-offset: 4px;
+  box-shadow: 0 0 0 7px rgba(41, 151, 255, 0.28), 0 12px 35px rgba(0, 0, 0, 0.45) !important;
+  transform: scale(1.035);
+  position: relative;
+  z-index: 60;
+}
+
+.tv-primary-nav {
+  bottom: 1.5rem !important;
+  left: 20rem !important;
+  right: 2rem !important;
+  padding: 0.75rem 1rem;
+}
+
+.tv-primary-nav button {
+  min-width: 9rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tv-shell button:focus-visible,
+  .tv-shell a[href]:focus-visible,
+  .tv-shell [role="button"]:focus-visible {
+    transform: none;
+  }
+
+  .animate-sheet-rise,
+  .animate-sheet-backdrop,
+  .nav-capsule,
+  .press-row,
+  .glass-chip,
+  .glass-fab {
+    animation: none !important;
+    transition: none !important;
+  }
+}

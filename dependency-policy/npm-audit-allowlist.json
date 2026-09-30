@@ -1,0 +1,27 @@
+{
+  "expires": "2026-12-29",
+  "advisories": {
+    "GHSA-4x5r-pxfx-6jf8": "Build-only Babel source-map advisory; retained temporarily while the toolchain update is tested.",
+    "GHSA-28wg-ghj8-5hjv": "Transitive nanoid path is not used for untrusted generator sizes; awaiting the next compatible lockfile refresh.",
+    "GHSA-2v37-7h3g-55p8": "Transitive nanoid path is not used for custom zero-sized generators; awaiting the next compatible lockfile refresh.",
+    "GHSA-3v7f-55p6-f55p": "Build/test glob dependency only; awaiting compatible upstream refresh.",
+    "GHSA-c2c7-rcm5-vvqj": "Build/test glob dependency only; no attacker-controlled glob patterns are accepted.",
+    "GHSA-qx2v-qp2m-jg93": "Build-time PostCSS path; application CSS is repository-controlled.",
+    "GHSA-6g55-p6wh-862q": "Build-time PostCSS path; application CSS and source maps are repository-controlled.",
+    "GHSA-fxqj-rqcc-2cmp": "Build-time PostCSS path; application CSS and source maps are repository-controlled.",
+    "GHSA-r28c-9q8g-f849": "Build-time PostCSS path; application CSS and source maps are repository-controlled.",
+    "GHSA-mw96-cpmx-2vgc": "Build-time Rollup input paths are repository-controlled; awaiting compatible upstream refresh.",
+    "GHSA-4w7w-66w2-5vf9": "Development-server advisory; production Tauri assets are prebuilt and local.",
+    "GHSA-v2wj-q39q-566r": "Development-server advisory; CI binds Vite to loopback with repository-controlled inputs.",
+    "GHSA-p9ff-h696-f583": "Development-server advisory; CI binds Vite to loopback with repository-controlled inputs.",
+    "GHSA-v6wh-96g9-6wx3": "Development-server editor integration is not exposed by the packaged application.",
+    "GHSA-fx2h-pf6j-xcff": "Development-server advisory; the packaged application does not ship the Vite dev server.",
+    "GHSA-3wwx-pv8p-q78v": "Transitive undici path is development tooling only; npm audit --omit=dev reports zero vulnerabilities.",
+    "GHSA-73wf-gq98-2v4g": "Build-time browserslist path; browser targets and configuration are repository-controlled.",
+    "GHSA-c83g-rgw3-j3cx": "Build-time browserslist path; browser targets and configuration are repository-controlled.",
+    "GHSA-82fw-gwwq-j7x9": "Test-runner Vitest mocker path; test fixtures and served paths are repository-controlled.",
+    "GHSA-w5vr-8v7q-w6rv": "Build-time browser-baseline data path; inputs are repository-controlled.",
+    "GHSA-xwg4-73v4-xw9w": "Transitive nanoid path is not used for untrusted generator sizes; awaiting the next compatible lockfile refresh."
+  },
+  "policy": "Temporary reviewed baseline only. New advisories fail. Remove entries as compatible fixes land; do not extend the expiry without explicit review. Re-reviewed 2026-09-29 during the Step 14 audit: npm audit --omit=dev reports zero runtime-dependency vulnerabilities; every entry above is a dev/build toolchain path."
+}

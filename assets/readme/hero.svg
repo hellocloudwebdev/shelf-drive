@@ -1,0 +1,330 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="1200" height="400">
+  <title>Shelf Drive — Your Digital Shelf</title>
+  <desc>Hero banner for Shelf Drive: a local-first file workspace powered by your Telegram account. Built with React, Rust, Tauri, and TypeScript.</desc>
+
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bg" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0%" stop-color="#0b1220"/>
+      <stop offset="100%" stop-color="#121b2e"/>
+    </linearGradient>
+
+    <!-- Radial cyan glow — center-left -->
+    <radialGradient id="glowCenter" cx="0.42" cy="0.48" r="0.55" fx="0.42" fy="0.48">
+      <stop offset="0%" stop-color="#00BCD4" stop-opacity="0.12"/>
+      <stop offset="55%" stop-color="#00BCD4" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#00BCD4" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Secondary glow — top-right accent -->
+    <radialGradient id="glowTopRight" cx="0.82" cy="0.18" r="0.4">
+      <stop offset="0%" stop-color="#4FC3F7" stop-opacity="0.09"/>
+      <stop offset="100%" stop-color="#4FC3F7" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Bottom-left subtle warmth -->
+    <radialGradient id="glowBottomLeft" cx="0.12" cy="0.88" r="0.35">
+      <stop offset="0%" stop-color="#1DE9B6" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#1DE9B6" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Frosted glass fill -->
+    <linearGradient id="frost" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.04"/>
+    </linearGradient>
+
+    <!-- Card glass variant — brighter -->
+    <linearGradient id="frostBright" x1="0" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
+    </linearGradient>
+
+    <!-- Badge gradient -->
+    <linearGradient id="badgeFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
+    </linearGradient>
+
+    <!-- Folder tab accent -->
+    <linearGradient id="folderAccent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4FC3F7" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#00BCD4" stop-opacity="0.15"/>
+    </linearGradient>
+
+    <!-- Grid dot pattern -->
+    <pattern id="dots" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="16" cy="16" r="0.7" fill="#4FC3F7" opacity="0.12"/>
+    </pattern>
+
+    <!-- Glow filter for soft circles -->
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="18"/>
+    </filter>
+
+    <!-- Lighter glow -->
+    <filter id="subtleGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10"/>
+    </filter>
+
+    <!-- Card shadow -->
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur"/>
+      <feOffset in="blur" dx="0" dy="3" result="offset"/>
+      <feFlood flood-color="#000000" flood-opacity="0.25" result="color"/>
+      <feComposite in="color" in2="offset" operator="in" result="shadow"/>
+      <feMerge>
+        <feMergeNode in="shadow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Title text shadow -->
+    <filter id="titleGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
+    </filter>
+  </defs>
+
+  <!-- ============================================ -->
+  <!--  BACKGROUND LAYERS                           -->
+  <!-- ============================================ -->
+
+  <!-- Base canvas -->
+  <rect width="1200" height="400" fill="url(#bg)"/>
+
+  <!-- Dot grid overlay -->
+  <rect width="1200" height="400" fill="url(#dots)"/>
+
+  <!-- Radial glow layers -->
+  <rect width="1200" height="400" fill="url(#glowCenter)"/>
+  <rect width="1200" height="400" fill="url(#glowTopRight)"/>
+  <rect width="1200" height="400" fill="url(#glowBottomLeft)"/>
+
+  <!-- ============================================ -->
+  <!--  DECORATIVE GLOW CIRCLES                     -->
+  <!-- ============================================ -->
+
+  <circle cx="480" cy="200" r="90" fill="#00BCD4" opacity="0.07" filter="url(#softGlow)"/>
+  <circle cx="900" cy="100" r="60" fill="#4FC3F7" opacity="0.06" filter="url(#softGlow)"/>
+  <circle cx="150" cy="320" r="50" fill="#1DE9B6" opacity="0.05" filter="url(#softGlow)"/>
+  <circle cx="1050" cy="300" r="45" fill="#4FC3F7" opacity="0.05" filter="url(#softGlow)"/>
+
+  <!-- ============================================ -->
+  <!--  FLOATING GLASS CARDS — BACKGROUND LAYER     -->
+  <!-- ============================================ -->
+
+  <!-- Far-back card — top-left, rotated -->
+  <g transform="translate(65, 55) rotate(-8, 55, 40)" opacity="0.35">
+    <rect width="110" height="80" rx="8" fill="url(#frost)" stroke="#ffffff" stroke-opacity="0.08" stroke-width="0.5"/>
+    <!-- File lines -->
+    <rect x="14" y="18" width="50" height="3" rx="1.5" fill="#ffffff" opacity="0.12"/>
+    <rect x="14" y="28" width="70" height="3" rx="1.5" fill="#ffffff" opacity="0.08"/>
+    <rect x="14" y="38" width="40" height="3" rx="1.5" fill="#ffffff" opacity="0.06"/>
+  </g>
+
+  <!-- Folder card — right side, slight tilt -->
+  <g transform="translate(1020, 65) rotate(5, 65, 45)" opacity="0.4" filter="url(#cardShadow)">
+    <!-- Folder tab -->
+    <path d="M0,12 L0,6 Q0,0 6,0 L35,0 Q40,0 42,5 L48,15 L124,15 Q130,15 130,21 L130,90 Q130,96 124,96 L6,96 Q0,96 0,90 Z" fill="url(#frostBright)" stroke="#ffffff" stroke-opacity="0.10" stroke-width="0.5"/>
+    <rect x="0" y="15" width="130" height="81" rx="0 0 6 6" fill="url(#folderAccent)" opacity="0.15"/>
+    <!-- Icon hint -->
+    <rect x="16" y="35" width="44" height="3" rx="1.5" fill="#4FC3F7" opacity="0.25"/>
+    <rect x="16" y="45" width="60" height="3" rx="1.5" fill="#ffffff" opacity="0.10"/>
+    <rect x="16" y="55" width="35" height="3" rx="1.5" fill="#ffffff" opacity="0.08"/>
+  </g>
+
+  <!-- Tall card — left mid -->
+  <g transform="translate(30, 160) rotate(-4, 50, 60)" opacity="0.3">
+    <rect width="100" height="120" rx="8" fill="url(#frost)" stroke="#ffffff" stroke-opacity="0.07" stroke-width="0.5"/>
+    <!-- Image placeholder block -->
+    <rect x="10" y="12" width="80" height="45" rx="4" fill="#4FC3F7" opacity="0.06"/>
+    <rect x="10" y="66" width="55" height="3" rx="1.5" fill="#ffffff" opacity="0.10"/>
+    <rect x="10" y="76" width="70" height="3" rx="1.5" fill="#ffffff" opacity="0.07"/>
+    <rect x="10" y="86" width="40" height="3" rx="1.5" fill="#ffffff" opacity="0.05"/>
+  </g>
+
+  <!-- Small card — bottom-right -->
+  <g transform="translate(1080, 230) rotate(7, 40, 35)" opacity="0.35">
+    <rect width="95" height="75" rx="8" fill="url(#frostBright)" stroke="#ffffff" stroke-opacity="0.08" stroke-width="0.5"/>
+    <circle cx="30" cy="28" r="12" fill="#4FC3F7" opacity="0.08"/>
+    <rect x="50" y="22" width="30" height="3" rx="1.5" fill="#ffffff" opacity="0.12"/>
+    <rect x="50" y="30" width="22" height="3" rx="1.5" fill="#ffffff" opacity="0.08"/>
+    <rect x="14" y="52" width="60" height="3" rx="1.5" fill="#ffffff" opacity="0.06"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!--  FLOATING GLASS CARDS — MIDGROUND LAYER      -->
+  <!-- ============================================ -->
+
+  <!-- Prominent card — left of center -->
+  <g transform="translate(155, 110) rotate(-3, 70, 55)" opacity="0.55" filter="url(#cardShadow)">
+    <rect width="140" height="110" rx="10" fill="url(#frostBright)" stroke="#ffffff" stroke-opacity="0.12" stroke-width="0.5"/>
+    <!-- Top bar -->
+    <rect x="12" y="12" width="116" height="4" rx="2" fill="#4FC3F7" opacity="0.18"/>
+    <!-- Content lines -->
+    <rect x="12" y="28" width="80" height="3" rx="1.5" fill="#ffffff" opacity="0.14"/>
+    <rect x="12" y="38" width="100" height="3" rx="1.5" fill="#ffffff" opacity="0.10"/>
+    <rect x="12" y="48" width="60" height="3" rx="1.5" fill="#ffffff" opacity="0.08"/>
+    <!-- Thumbnail block -->
+    <rect x="12" y="64" width="50" height="34" rx="4" fill="#00BCD4" opacity="0.07"/>
+    <rect x="70" y="68" width="46" height="3" rx="1.5" fill="#ffffff" opacity="0.08"/>
+    <rect x="70" y="78" width="36" height="3" rx="1.5" fill="#ffffff" opacity="0.06"/>
+  </g>
+
+  <!-- Card — right edge, stacked look -->
+  <g transform="translate(960, 170) rotate(3, 60, 50)" opacity="0.45" filter="url(#cardShadow)">
+    <rect width="120" height="100" rx="10" fill="url(#frost)" stroke="#ffffff" stroke-opacity="0.10" stroke-width="0.5"/>
+    <!-- Checkbox-style list -->
+    <rect x="12" y="16" width="8" height="8" rx="2" fill="none" stroke="#4FC3F7" stroke-opacity="0.30" stroke-width="1"/>
+    <rect x="28" y="17" width="60" height="3" rx="1.5" fill="#ffffff" opacity="0.12"/>
+    <rect x="12" y="34" width="8" height="8" rx="2" fill="none" stroke="#4FC3F7" stroke-opacity="0.25" stroke-width="1"/>
+    <rect x="28" y="35" width="50" height="3" rx="1.5" fill="#ffffff" opacity="0.09"/>
+    <rect x="12" y="52" width="8" height="8" rx="2" fill="#4FC3F7" opacity="0.20"/>
+    <rect x="28" y="53" width="70" height="3" rx="1.5" fill="#ffffff" opacity="0.09"/>
+    <rect x="12" y="70" width="8" height="8" rx="2" fill="none" stroke="#4FC3F7" stroke-opacity="0.20" stroke-width="1"/>
+    <rect x="28" y="71" width="45" height="3" rx="1.5" fill="#ffffff" opacity="0.07"/>
+  </g>
+
+  <!-- Tiny floating chip — top center-right -->
+  <g transform="translate(870, 48) rotate(12, 30, 20)" opacity="0.4">
+    <rect width="60" height="40" rx="8" fill="url(#frostBright)" stroke="#ffffff" stroke-opacity="0.10" stroke-width="0.5"/>
+    <circle cx="20" cy="20" r="6" fill="#4FC3F7" opacity="0.15"/>
+    <rect x="32" y="16" width="18" height="2.5" rx="1.2" fill="#ffffff" opacity="0.12"/>
+    <rect x="32" y="22" width="12" height="2.5" rx="1.2" fill="#ffffff" opacity="0.08"/>
+  </g>
+
+  <!-- Small card — bottom-left -->
+  <g transform="translate(190, 280) rotate(6, 40, 30)" opacity="0.3">
+    <rect width="80" height="60" rx="8" fill="url(#frost)" stroke="#ffffff" stroke-opacity="0.07" stroke-width="0.5"/>
+    <rect x="10" y="12" width="60" height="24" rx="4" fill="#00BCD4" opacity="0.06"/>
+    <rect x="10" y="44" width="40" height="2.5" rx="1.2" fill="#ffffff" opacity="0.08"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!--  EXTRA DECORATIVE ELEMENTS                   -->
+  <!-- ============================================ -->
+
+  <!-- Thin horizontal line accents -->
+  <line x1="340" y1="132" x2="460" y2="132" stroke="#4FC3F7" stroke-opacity="0.06" stroke-width="0.5"/>
+  <line x1="740" y1="268" x2="860" y2="268" stroke="#4FC3F7" stroke-opacity="0.05" stroke-width="0.5"/>
+
+  <!-- Scattered small dots -->
+  <circle cx="320" cy="80" r="1.5" fill="#4FC3F7" opacity="0.20"/>
+  <circle cx="780" cy="55" r="1" fill="#ffffff" opacity="0.15"/>
+  <circle cx="550" cy="350" r="1.2" fill="#4FC3F7" opacity="0.18"/>
+  <circle cx="680" cy="90" r="1" fill="#1DE9B6" opacity="0.15"/>
+  <circle cx="400" cy="330" r="1.3" fill="#ffffff" opacity="0.12"/>
+  <circle cx="950" cy="340" r="1" fill="#4FC3F7" opacity="0.14"/>
+
+  <!-- ============================================ -->
+  <!--  SHELF ICON (left of title)                  -->
+  <!-- ============================================ -->
+
+  <g transform="translate(410, 120)">
+    <!-- Cloud-shelf hybrid icon -->
+    <g opacity="0.9" filter="url(#subtleGlow)">
+      <circle cx="24" cy="18" r="18" fill="#4FC3F7" opacity="0.12"/>
+    </g>
+    <!-- Shelf bracket shape -->
+    <path d="M6,8 L6,32 L42,32 L42,8" fill="none" stroke="#4FC3F7" stroke-width="2" stroke-opacity="0.6" stroke-linecap="round"/>
+    <!-- Shelf horizontal lines -->
+    <line x1="6" y1="18" x2="42" y2="18" stroke="#4FC3F7" stroke-width="1.5" stroke-opacity="0.4"/>
+    <line x1="6" y1="32" x2="42" y2="32" stroke="#4FC3F7" stroke-width="2" stroke-opacity="0.7"/>
+    <!-- Small items on shelf -->
+    <rect x="10" y="22" width="8" height="9" rx="1.5" fill="#4FC3F7" opacity="0.30"/>
+    <rect x="21" y="25" width="6" height="6" rx="1" fill="#ffffff" opacity="0.18"/>
+    <rect x="30" y="20" width="8" height="11" rx="1.5" fill="#4FC3F7" opacity="0.22"/>
+    <!-- Top items -->
+    <rect x="12" y="10" width="7" height="7" rx="1" fill="#ffffff" opacity="0.14"/>
+    <rect x="22" y="12" width="10" height="5" rx="1" fill="#4FC3F7" opacity="0.18"/>
+  </g>
+
+  <!-- ============================================ -->
+  <!--  MAIN TEXT CONTENT                            -->
+  <!-- ============================================ -->
+
+  <!-- Title glow underneath -->
+  <text x="600" y="168" text-anchor="middle"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="48" font-weight="700" fill="#4FC3F7" opacity="0.3"
+        filter="url(#titleGlow)">Shelf Drive</text>
+
+  <!-- Title -->
+  <text x="600" y="168" text-anchor="middle"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="48" font-weight="700" fill="#ffffff">Shelf Drive</text>
+
+  <!-- Tagline -->
+  <text x="600" y="208" text-anchor="middle"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="20" font-weight="400" fill="#4FC3F7" opacity="0.90">More than storage &#x2014; it&#x2019;s your digital shelf</text>
+
+  <!-- Sub-line -->
+  <text x="600" y="240" text-anchor="middle"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+        font-size="16" font-weight="300" fill="#8BA4C7" opacity="0.85">A local-first file workspace powered by your Telegram account</text>
+
+  <!-- ============================================ -->
+  <!--  SEPARATOR LINE                              -->
+  <!-- ============================================ -->
+
+  <line x1="480" y1="268" x2="720" y2="268" stroke="#4FC3F7" stroke-opacity="0.12" stroke-width="0.5"/>
+
+  <!-- ============================================ -->
+  <!--  TECH BADGES                                 -->
+  <!-- ============================================ -->
+
+  <g transform="translate(600, 300)" text-anchor="middle"
+     font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+     font-size="12" font-weight="500">
+
+    <!-- React badge -->
+    <g transform="translate(-168, 0)">
+      <rect x="-30" y="-14" width="60" height="26" rx="13" fill="url(#badgeFill)" stroke="#4FC3F7" stroke-opacity="0.25" stroke-width="0.5"/>
+      <text y="4" fill="#4FC3F7" opacity="0.85">React</text>
+    </g>
+
+    <!-- Rust badge -->
+    <g transform="translate(-56, 0)">
+      <rect x="-26" y="-14" width="52" height="26" rx="13" fill="url(#badgeFill)" stroke="#4FC3F7" stroke-opacity="0.25" stroke-width="0.5"/>
+      <text y="4" fill="#4FC3F7" opacity="0.85">Rust</text>
+    </g>
+
+    <!-- Tauri badge -->
+    <g transform="translate(56, 0)">
+      <rect x="-28" y="-14" width="56" height="26" rx="13" fill="url(#badgeFill)" stroke="#4FC3F7" stroke-opacity="0.25" stroke-width="0.5"/>
+      <text y="4" fill="#4FC3F7" opacity="0.85">Tauri</text>
+    </g>
+
+    <!-- TypeScript badge -->
+    <g transform="translate(168, 0)">
+      <rect x="-42" y="-14" width="84" height="26" rx="13" fill="url(#badgeFill)" stroke="#4FC3F7" stroke-opacity="0.25" stroke-width="0.5"/>
+      <text y="4" fill="#4FC3F7" opacity="0.85">TypeScript</text>
+    </g>
+  </g>
+
+  <!-- ============================================ -->
+  <!--  SUBTLE TOP/BOTTOM EDGE LINES                -->
+  <!-- ============================================ -->
+
+  <!-- Top edge highlight -->
+  <line x1="0" y1="0.5" x2="1200" y2="0.5" stroke="#4FC3F7" stroke-opacity="0.08" stroke-width="1"/>
+  <!-- Bottom edge -->
+  <line x1="0" y1="399.5" x2="1200" y2="399.5" stroke="#4FC3F7" stroke-opacity="0.06" stroke-width="1"/>
+
+  <!-- Corner accents — top-left -->
+  <line x1="0" y1="0" x2="40" y2="0" stroke="#4FC3F7" stroke-opacity="0.25" stroke-width="1.5"/>
+  <line x1="0" y1="0" x2="0" y2="40" stroke="#4FC3F7" stroke-opacity="0.25" stroke-width="1.5"/>
+
+  <!-- Corner accents — top-right -->
+  <line x1="1200" y1="0" x2="1160" y2="0" stroke="#4FC3F7" stroke-opacity="0.25" stroke-width="1.5"/>
+  <line x1="1200" y1="0" x2="1200" y2="40" stroke="#4FC3F7" stroke-opacity="0.25" stroke-width="1.5"/>
+
+  <!-- Corner accents — bottom-left -->
+  <line x1="0" y1="400" x2="40" y2="400" stroke="#4FC3F7" stroke-opacity="0.25" stroke-width="1.5"/>
+  <line x1="0" y1="400" x2="0" y2="360" stroke="#4FC3F7" stroke-opacity="0.25" stroke-width="1.5"/>
+
+  <!-- Corner accents — bottom-right -->
+  <line x1="1200" y1="400" x2="1160" y2="400" stroke="#4FC3F7" stroke-opacity="0.25" stroke-width="1.5"/>
+  <line x1="1200" y1="400" x2="1200" y2="360" stroke="#4FC3F7" stroke-opacity="0.25" stroke-width="1.5"/>
+</svg>

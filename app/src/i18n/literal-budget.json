@@ -1,0 +1,38 @@
+{
+  "maxFindings": 486,
+  "areaBudgets": {
+    "supporterAndSponsors": {
+      "maxFindings": 28,
+      "patterns": ["Supporter", "AdBanner", "Adsterra"]
+    },
+    "encryptionAndAccess": {
+      "maxFindings": 37,
+      "patterns": ["Encryption", "AccessTransparency"]
+    },
+    "authentication": {
+      "maxFindings": 27,
+      "patterns": ["/Auth", "/auth/"]
+    },
+    "sync": {
+      "maxFindings": 0,
+      "patterns": ["Sync"]
+    },
+    "transfersAndLocalServices": {
+      "maxFindings": 148,
+      "patterns": ["DownloadQueue", "UploadQueue", "TransferCenter", "ShareDialog", "SettingsModal", "SettingsTabs", "UploadChoiceContext", "BandwidthWidget", "RemoteUploadModal"]
+    },
+    "mediaAndHelp": {
+      "maxFindings": 102,
+      "patterns": ["AdaptiveMediaPlayer", "MediaPlayer", "PdfViewer", "ArchiveViewer", "PreviewModal", "HelpCenter", "KeyboardShortcuts", "QualitySelector"]
+    },
+    "mobile": {
+      "maxFindings": 120,
+      "patterns": ["components[/\\\\]mobile"]
+    },
+    "other": {
+      "maxFindings": 144,
+      "patterns": []
+    }
+  },
+  "policy": "Temporary ratcheting ceilings. High-risk UI areas and the overall total cannot increase; lower the matching ceiling whenever literals are extracted. Increases require an explicit localization review. The mobile area was added during the 2026-09 mobile UI redesign, which restructured the touch shell around five new screens; its literals moved out of 'other' (which stays at 144) and must ratchet down as they are extracted."
+}

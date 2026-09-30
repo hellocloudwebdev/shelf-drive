@@ -1,0 +1,9 @@
+# Android startup and critical-user-journey profile. Keep this list focused on
+# app-owned entry points; release CI verifies that the profile is packaged.
+Lcom/hellocloudweb/shelfdrive/ShelfDriveApplication;
+Lcom/hellocloudweb/shelfdrive/MainActivity;
+Lcom/hellocloudweb/shelfdrive/MediaPlayerActivity;
+Lcom/hellocloudweb/shelfdrive/PlaybackService;
+Lcom/hellocloudweb/shelfdrive/UploadForegroundService;
+Lcom/hellocloudweb/shelfdrive/TransferJobService;
+Lcom/hellocloudweb/shelfdrive/TransferRecoveryWorker;

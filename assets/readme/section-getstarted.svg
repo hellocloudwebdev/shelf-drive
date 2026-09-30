@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 130" width="1200" height="130" role="img" aria-labelledby="gs-title gs-desc">
+  <title id="gs-title">Get Started</title>
+  <desc id="gs-desc">Section banner for Get Started: Up and running in under 2 minutes</desc>
+
+  <defs>
+    <linearGradient id="gs-bg" x1="0" y1="0" x2="1200" y2="130" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0b1220"/>
+      <stop offset="100%" stop-color="#121b2e"/>
+    </linearGradient>
+
+    <linearGradient id="gs-glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4FC3F7" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#4FC3F7" stop-opacity="0.04"/>
+    </linearGradient>
+
+    <radialGradient id="gs-glow" cx="100" cy="65" r="160" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4FC3F7" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#4FC3F7" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Rocket exhaust trail gradient -->
+    <linearGradient id="gs-trail" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4FC3F7" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#4FC3F7" stop-opacity="0"/>
+    </linearGradient>
+
+    <clipPath id="gs-clip">
+      <rect width="1200" height="130" rx="12"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#gs-clip)">
+    <!-- Background -->
+    <rect width="1200" height="130" fill="url(#gs-bg)"/>
+
+    <!-- Glow -->
+    <ellipse cx="100" cy="65" rx="180" ry="100" fill="url(#gs-glow)"/>
+
+    <!-- Frosted glass panel -->
+    <rect x="16" y="12" width="1168" height="106" rx="10" fill="url(#gs-glass)" stroke="#4FC3F7" stroke-opacity="0.15" stroke-width="1"/>
+
+    <!-- Rocket + arrow decorative motif (left side) -->
+    <g opacity="0.35" transform="translate(52, 22)">
+      <!-- Rocket body -->
+      <path d="M30 70 L30 30 C30 18 38 8 42 4 C46 8 54 18 54 30 L54 70 Z" fill="#4FC3F7" fill-opacity="0.08" stroke="#4FC3F7" stroke-width="1.3" stroke-linejoin="round"/>
+
+      <!-- Rocket nose cone highlight -->
+      <path d="M38 28 C38 20 42 12 42 12 C42 12 46 20 46 28" fill="none" stroke="#4FC3F7" stroke-width="0.8" stroke-opacity="0.5"/>
+
+      <!-- Rocket window -->
+      <circle cx="42" cy="38" r="4" fill="#4FC3F7" fill-opacity="0.15" stroke="#4FC3F7" stroke-width="1"/>
+
+      <!-- Left fin -->
+      <path d="M30 58 L22 72 L30 70" fill="#4FC3F7" fill-opacity="0.10" stroke="#4FC3F7" stroke-width="1.2" stroke-linejoin="round"/>
+
+      <!-- Right fin -->
+      <path d="M54 58 L62 72 L54 70" fill="#4FC3F7" fill-opacity="0.10" stroke="#4FC3F7" stroke-width="1.2" stroke-linejoin="round"/>
+
+      <!-- Exhaust flames -->
+      <path d="M36 70 L38 80 L42 75 L46 80 L48 70" fill="none" stroke="#4FC3F7" stroke-width="1" stroke-linejoin="round" stroke-opacity="0.5"/>
+
+      <!-- Upward arrow beside rocket -->
+      <line x1="72" y1="68" x2="72" y2="20" stroke="#4FC3F7" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+      <polyline points="66,30 72,20 78,30" fill="none" stroke="#4FC3F7" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+    </g>
+
+    <!-- Section number -->
+    <text x="140" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="52" font-weight="800" fill="#4FC3F7" opacity="0.30" letter-spacing="-2">04</text>
+
+    <!-- Title -->
+    <text x="220" y="62" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="700" fill="#e9eef8">Get Started</text>
+
+    <!-- Subtitle -->
+    <text x="220" y="88" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="14" font-weight="400" fill="#e9eef8" opacity="0.55">Up and running in under 2 minutes</text>
+
+    <!-- Right-side decorative: ascending chevrons -->
+    <g opacity="0.14" stroke="#4FC3F7" stroke-width="1.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="1110,90 1120,80 1130,90"/>
+      <polyline points="1110,75 1120,65 1130,75"/>
+      <polyline points="1110,60 1120,50 1130,60"/>
+      <polyline points="1110,45 1120,35 1130,45"/>
+    </g>
+
+    <!-- Bottom accent bar -->
+    <rect x="220" y="118" width="60" height="2" rx="1" fill="#4FC3F7" opacity="0.40"/>
+  </g>
+</svg>

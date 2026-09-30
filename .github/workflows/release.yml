@@ -1,0 +1,472 @@
+name: "Release"
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger on version tags like v1.0.0, v1.0.1
+
+jobs:
+  dependency-assurance:
+    name: Verify dependency security policy
+    uses: ./.github/workflows/dependency-assurance.yml
+    permissions:
+      contents: read
+
+  verify-release:
+    name: Verify release invariants
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            app/package-lock.json
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@4360b52568e2003a75bf9bc1d59f33a8e3fc893c # stable
+
+      - name: Install Linux desktop dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libssl-dev libdbus-1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
+
+      - name: Install application dependencies
+        working-directory: app
+        run: npm ci
+
+      - name: Verify release tag, application version, and changelog
+        working-directory: app
+        run: npm run release:version:check -- --tag "$GITHUB_REF_NAME" --changelog ../CHANGELOG.md
+
+      - name: Test frontend behavior and architecture invariants
+        working-directory: app
+        run: npm run test:coverage
+
+      - name: Validate locale resources and generated key types
+        working-directory: app
+        run: |
+          node scripts/i18n/generate-key-types.cjs --check
+          npm run i18n:validate
+
+      - name: Build production frontend
+        working-directory: app
+        run: npm run build:verify
+
+      - name: Test Rust library invariants
+        working-directory: app/src-tauri
+        run: cargo test --lib
+
+      - name: Verify Rust formatting
+        working-directory: app/src-tauri
+        run: cargo fmt --all -- --check
+
+      - name: Lint native release targets without warnings
+        working-directory: app/src-tauri
+        run: cargo clippy --lib --all-targets -- -D warnings
+
+  create-release:
+    needs: [verify-release, dependency-assurance]
+    runs-on: ubuntu-latest
+    outputs:
+      release_id: ${{ steps.create-release.outputs.result }}
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      
+      - name: Extract changelog for this version
+        id: changelog
+        run: |
+          # Extract the first version block from CHANGELOG.md (between first and second ## headings)
+          BODY=$(awk '/^## \[/{if(found) exit; found=1; next} found' CHANGELOG.md)
+          # Escape for GitHub Actions output
+          echo "BODY<<EOF" >> $GITHUB_OUTPUT
+          echo "$BODY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        id: create-release
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        env:
+          RELEASE_BODY: ${{ steps.changelog.outputs.BODY }}
+          RELEASE_VERSION: ${{ steps.get_version.outputs.VERSION }}
+        with:
+          script: |
+            const tag = `v${process.env.RELEASE_VERSION}`;
+            try {
+              const { data: existingRelease } = await github.rest.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag: tag
+              });
+              await github.rest.repos.updateRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: existingRelease.id,
+                body: process.env.RELEASE_BODY,
+                draft: true
+              });
+              console.log(`Updated existing release for tag ${tag} (ID: ${existingRelease.id})`);
+              return existingRelease.id;
+            } catch (err) {
+              if (err.status === 404) {
+                const { data: newRelease } = await github.rest.repos.createRelease({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  tag_name: tag,
+                  name: `Shelf Drive v${process.env.RELEASE_VERSION}`,
+                  body: process.env.RELEASE_BODY,
+                  draft: true,
+                  prerelease: false
+                });
+                console.log(`Created new release for tag ${tag} (ID: ${newRelease.id})`);
+                return newRelease.id;
+              } else {
+                throw err;
+              }
+            }
+
+  build-tauri:
+    needs: create-release
+    permissions:
+      contents: write
+    env:
+      SHELF_DRIVE_CRASH_REPORT_ENDPOINT: ${{ vars.CRASH_REPORT_ENDPOINT }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Windows
+          - platform: windows-latest
+            args: '--bundles nsis --config src-tauri/tauri.windows.release.conf.json'
+            target: ''
+          
+          # Linux
+          - platform: ubuntu-22.04
+            args: ''
+            target: ''
+            
+          # macOS Intel
+          - platform: macos-latest
+            args: '--target x86_64-apple-darwin'
+            target: 'x86_64-apple-darwin'
+          
+          # macOS Apple Silicon
+          - platform: macos-latest
+            args: '--target aarch64-apple-darwin'
+            target: 'aarch64-apple-darwin'
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 20
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@4360b52568e2003a75bf9bc1d59f33a8e3fc893c # stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Install dependencies (Ubuntu)
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev \
+            build-essential \
+            curl \
+            wget \
+            file \
+            libssl-dev \
+            libdbus-1-dev \
+            libgtk-3-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            libfuse2
+
+      - name: Install frontend dependencies
+        working-directory: app
+        run: npm ci
+
+      - name: Prepare Windows runtime prerequisite
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        run: ./app/scripts/prepare-windows-runtime.ps1
+
+      - name: Prepare Tauri signing key
+        shell: node {0}
+        env:
+          KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          const fs = require('fs');
+          const key = process.env.KEY.trim();
+          // Tauri expects TAURI_SIGNING_PRIVATE_KEY to be base64-encoded.
+          // If the secret is raw key text, base64-encode it; otherwise pass through.
+          const b64 = key.startsWith('untrusted comment:')
+            ? Buffer.from(key).toString('base64')
+            : key;
+          fs.appendFileSync(process.env.GITHUB_ENV, `TAURI_SIGNING_PRIVATE_KEY=${b64}\n`);
+
+      - name: Build the app
+        uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5 # v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ env.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        with:
+          releaseId: ${{ needs.create-release.outputs.release_id }}
+          projectPath: ./app
+          includeUpdaterJson: true
+          args: ${{ matrix.args }}
+
+      - name: Verify Windows installer runtime
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        run: ./app/scripts/verify-windows-bundle.ps1
+
+  build-arch:
+    name: Build and verify Arch package
+    needs: [create-release, build-tauri]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    container:
+      image: archlinux:base-devel-20260823.0.578598@sha256:68bfc3b0d277b08a99101dc9b94aaa03e5ae70cf1b4fb965c03b2b87b915760d
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Install packaging and smoke-test tools
+        run: |
+          pacman -Syu --noconfirm \
+            cairo \
+            dbus \
+            desktop-file-utils \
+            gdk-pixbuf2 \
+            github-cli \
+            gtk3 \
+            jq \
+            libayatana-appindicator \
+            libarchive \
+            libsoup3 \
+            namcap \
+            pacman-contrib \
+            webkit2gtk-4.1 \
+            xorg-server-xvfb \
+            xorg-xauth
+
+      - name: Download the exact upstream Debian release artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p upstream-linux
+          gh release download "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --dir upstream-linux \
+            --pattern '*.deb' \
+            --clobber
+          mapfile -t deb_packages < <(find upstream-linux -maxdepth 1 -type f -name '*.deb' -print)
+          if [[ ${#deb_packages[@]} -ne 1 ]]; then
+            echo "::error::Expected exactly one Debian release artifact; found ${#deb_packages[@]}"
+            exit 1
+          fi
+
+      - name: Render checksum-locked PKGBUILD
+        run: |
+          set -euo pipefail
+          version="${GITHUB_REF_NAME#v}"
+          deb_package="upstream-linux/Shelf.Drive_${version}_amd64.deb"
+          bash scripts/render-arch-pkgbuild.sh "${deb_package}" "${version}" arch-package
+          useradd --create-home --shell /bin/bash arch-builder
+          chown -R arch-builder:arch-builder arch-package
+
+      - name: Build as an unprivileged user
+        run: |
+          set -euo pipefail
+          runuser -u arch-builder -- bash -c 'cd "$1" && makepkg --printsrcinfo > .SRCINFO && makepkg --cleanbuild --clean --noconfirm' _ "$PWD/arch-package"
+          mapfile -t packages < <(find arch-package -maxdepth 1 -type f -name 'shelf-drive-bin-*.pkg.tar.zst' -print)
+          if [[ ${#packages[@]} -ne 1 ]]; then
+            echo "::error::Expected exactly one Arch package; found ${#packages[@]}"
+            exit 1
+          fi
+
+      - name: Run package policy and structure checks
+        run: |
+          set -euo pipefail
+          package_path="$(find arch-package -maxdepth 1 -type f -name 'shelf-drive-bin-*.pkg.tar.zst' -print -quit)"
+          namcap arch-package/PKGBUILD "${package_path}" 2>&1 | tee arch-package/namcap.log
+          if grep -Eq '(^|[[:space:]])E:' arch-package/namcap.log; then
+            echo '::error::namcap reported a package error'
+            exit 1
+          fi
+          pacman -Qip "${package_path}"
+          pacman -Qlp "${package_path}"
+          pacman -U --noconfirm "${package_path}"
+          pacman -Qkk shelf-drive-bin
+          bash scripts/verify-arch-package.sh "${package_path}" "${GITHUB_REF_NAME#v}"
+
+      - name: Verify package reinstall preserves application data
+        run: |
+          set -euo pipefail
+          package_path="$(find arch-package -maxdepth 1 -type f -name 'shelf-drive-bin-*.pkg.tar.zst' -print -quit)"
+          seed_directory='/home/arch-builder/.local/share/com.hellocloudweb.shelfdrive'
+          install -d -o arch-builder -g arch-builder "${seed_directory}"
+          runuser -u arch-builder -- sh -c 'printf preserved > "$1/arch-package-preservation-test"' _ "${seed_directory}"
+          pacman -U --noconfirm "${package_path}"
+          grep -Fqx 'preserved' "${seed_directory}/arch-package-preservation-test"
+
+      - name: Run native X11 startup smoke test
+        run: |
+          set -euo pipefail
+          set +e
+          runuser -u arch-builder -- dbus-run-session -- xvfb-run -a timeout --kill-after=5s 15s shelf-drive > arch-package/startup-smoke.log 2>&1
+          smoke_status=$?
+          set -e
+          if [[ ${smoke_status} -ne 124 && ${smoke_status} -ne 137 ]]; then
+            cat arch-package/startup-smoke.log
+            echo "::error::Shelf Drive exited before the 15-second startup smoke window (status ${smoke_status})"
+            exit 1
+          fi
+          if grep -Eiq 'EGL_BAD_ALLOC|Could not create.*EGL display|segmentation fault|thread .* panicked' arch-package/startup-smoke.log; then
+            cat arch-package/startup-smoke.log
+            echo '::error::Linux startup smoke test found a rendering failure or crash'
+            exit 1
+          fi
+
+      - name: Generate resolved Arch runtime SBOM
+        run: |
+          bash scripts/generate-arch-runtime-sbom.sh \
+            "${GITHUB_REF_NAME#v}" \
+            arch-package/shelf-drive-arch-runtime-sbom.cdx.json
+
+      - name: Upload verified Arch assets to the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          package_path="$(find arch-package -maxdepth 1 -type f -name 'shelf-drive-bin-*.pkg.tar.zst' -print -quit)"
+          gh release upload "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            "${package_path}" \
+            arch-package/shelf-drive-arch-runtime-sbom.cdx.json \
+            --clobber
+
+  release-assurance:
+    needs: [create-release, build-tauri, build-arch]
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+
+      - uses: dtolnay/rust-toolchain@4360b52568e2003a75bf9bc1d59f33a8e3fc893c # stable
+
+      - name: Generate locked source SBOM
+        run: node scripts/generate-sboms.cjs release-assurance
+
+      - name: Download the final draft release artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p release-assets
+          gh release download "$GITHUB_REF_NAME" --dir release-assets --clobber
+          rm -f release-assets/SHA256SUMS.txt release-assets/shelf-drive-source-sbom.cdx.json release-assets/provenance.sigstore.json release-assets/sbom-attestation.sigstore.json release-assets/arch-sbom-attestation.sigstore.json
+          cp release-assurance/shelf-drive-source-sbom.cdx.json release-assets/
+          node scripts/generate-checksums.cjs release-assets release-assurance/SUBJECTS.sha256
+
+      - name: Prepare the Arch package SBOM subject
+        run: |
+          set -euo pipefail
+          mapfile -t arch_packages < <(find release-assets -maxdepth 1 -type f -name 'shelf-drive-bin-*.pkg.tar.zst' -print)
+          if [[ ${#arch_packages[@]} -ne 1 ]]; then
+            echo "::error::Expected exactly one assured Arch package; found ${#arch_packages[@]}"
+            exit 1
+          fi
+          test -s release-assets/shelf-drive-arch-runtime-sbom.cdx.json
+          sha256sum "${arch_packages[0]}" > release-assurance/ARCH_SUBJECT.sha256
+
+      - name: Attest release provenance
+        id: provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-checksums: release-assurance/SUBJECTS.sha256
+
+      - name: Attest release SBOM
+        id: sbom-attestation
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-checksums: release-assurance/SUBJECTS.sha256
+          sbom-path: release-assurance/shelf-drive-source-sbom.cdx.json
+
+      - name: Attest the Arch runtime SBOM
+        id: arch-sbom-attestation
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-checksums: release-assurance/ARCH_SUBJECT.sha256
+          sbom-path: release-assets/shelf-drive-arch-runtime-sbom.cdx.json
+
+      - name: Verify and upload release assurance artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PROVENANCE_BUNDLE: ${{ steps.provenance.outputs.bundle-path }}
+          SBOM_BUNDLE: ${{ steps.sbom-attestation.outputs.bundle-path }}
+          ARCH_SBOM_BUNDLE: ${{ steps.arch-sbom-attestation.outputs.bundle-path }}
+        run: |
+          cp "$PROVENANCE_BUNDLE" release-assets/provenance.sigstore.json
+          cp "$SBOM_BUNDLE" release-assets/sbom-attestation.sigstore.json
+          cp "$ARCH_SBOM_BUNDLE" release-assets/arch-sbom-attestation.sigstore.json
+          node scripts/generate-checksums.cjs release-assets release-assets/SHA256SUMS.txt
+          (cd release-assets && sha256sum -c SHA256SUMS.txt)
+          gh release upload "$GITHUB_REF_NAME" \
+            release-assets/shelf-drive-source-sbom.cdx.json \
+            release-assets/shelf-drive-arch-runtime-sbom.cdx.json \
+            release-assets/provenance.sigstore.json \
+            release-assets/sbom-attestation.sigstore.json \
+            release-assets/arch-sbom-attestation.sigstore.json \
+            release-assets/SHA256SUMS.txt \
+            --clobber
+
+  publish-release:
+    needs: [create-release, build-tauri, build-arch, release-assurance]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Publish Release
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        env:
+          release_id: ${{ needs.create-release.outputs.release_id }}
+        with:
+          script: |
+            github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: process.env.release_id,
+              draft: false,
+              prerelease: false,
+              make_latest: 'true'
+            })

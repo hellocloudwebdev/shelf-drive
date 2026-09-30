@@ -1,0 +1,250 @@
+import { transfers, tauriListen } from '../api/index';
+import type { DownloadItem, QueueItem } from '../types';
+import type { DownloadCollisionPolicy, DownloadOutcome } from '../types/transfers';
+import type { VideoUploadMode } from '../types/settings';
+
+export type TransferDirection = 'upload' | 'download';
+export type TransferKind = 'local_upload' | 'url_upload' | 'download';
+export type TransferStatus =
+    | 'pending'
+    | 'paused'
+    | 'waiting_for_network'
+    | 'cooldown'
+    | 'downloading'
+    | 'uploading'
+    | 'encrypting'
+    | 'decrypting'
+    | 'verifying'
+    | 'waiting_for_unlock'
+    | 'completed'
+    | 'failed'
+    | 'cancelled';
+
+export interface DesktopTransferJob {
+    id: string;
+    ownerId?: string | null;
+    direction: TransferDirection;
+    kind: TransferKind;
+    status: TransferStatus;
+    path?: string;
+    url?: string;
+    folderId: number | null;
+    messageId?: number;
+    filename: string;
+    savePath?: string;
+    collisionPolicy?: DownloadCollisionPolicy;
+    downloadOutcome?: DownloadOutcome;
+    protectionMode?: string;
+    protectMetadata?: boolean;
+    videoUploadMode?: VideoUploadMode;
+    tempZipPath?: string;
+    progress: number;
+    transferredBytes: number;
+    totalBytes: number;
+    speedBytesPerSec: number;
+    error?: string;
+    retryAt?: number;
+    queuePosition: number;
+    revision: number;
+    createdAt: number;
+    updatedAt: number;
+}
+
+export interface DesktopTransferRequest {
+    id: string;
+    ownerId?: string | null;
+    direction: TransferDirection;
+    kind: TransferKind;
+    path?: string;
+    url?: string;
+    folderId: number | null;
+    messageId?: number;
+    filename: string;
+    savePath?: string;
+    collisionPolicy?: DownloadCollisionPolicy;
+    protectionMode?: string;
+    promptToken?: number;
+    protectMetadata?: boolean;
+    videoUploadMode?: VideoUploadMode;
+    tempZipPath?: string;
+    totalBytes?: number;
+    initialStatus?: TransferStatus;
+}
+
+const uploadStatus = (status: TransferStatus): QueueItem['status'] => {
+    if (status === 'completed') return 'success';
+    if (status === 'failed') return 'error';
+    if (status === 'cooldown') return 'waiting_for_network';
+    return status;
+};
+
+const downloadStatus = (status: TransferStatus): DownloadItem['status'] => {
+    if (status === 'completed') return 'success';
+    if (status === 'failed') return 'error';
+    if (status === 'uploading' || status === 'encrypting') return 'downloading';
+    return status;
+};
+
+export const transferJobToUploadItem = (job: DesktopTransferJob): QueueItem => ({
+    id: job.id,
+    ownerId: job.ownerId ?? undefined,
+    path: job.path || job.filename,
+    url: job.url,
+    folderId: job.folderId,
+    status: uploadStatus(job.status),
+    error: job.error,
+    progress: job.progress,
+    uploadedBytes: job.transferredBytes,
+    totalBytes: job.totalBytes,
+    speedBytesPerSec: job.speedBytesPerSec,
+    tempZipPath: job.tempZipPath,
+    protection: job.protectionMode ? {
+        mode: job.protectionMode as NonNullable<QueueItem['protection']>['mode'],
+        protectMetadata: job.protectMetadata,
+    } : undefined,
+    videoUploadMode: job.videoUploadMode,
+});
+
+export const transferJobToDownloadItem = (job: DesktopTransferJob): DownloadItem => ({
+    id: job.id,
+    ownerId: job.ownerId ?? undefined,
+    messageId: job.messageId || 0,
+    filename: job.filename,
+    folderId: job.folderId,
+    status: downloadStatus(job.status),
+    error: job.error,
+    progress: job.progress,
+    downloadedBytes: job.transferredBytes,
+    totalBytes: job.totalBytes,
+    speedBytesPerSec: job.speedBytesPerSec,
+    savePath: job.savePath,
+    collisionPolicy: job.collisionPolicy ?? 'keep_both',
+    downloadOutcome: job.downloadOutcome,
+    protectionMode: job.protectionMode as DownloadItem['protectionMode'],
+});
+
+export const uploadItemToTransferRequest = (item: QueueItem): DesktopTransferRequest => ({
+    id: item.id,
+    ownerId: item.ownerId,
+    direction: 'upload',
+    kind: item.url ? 'url_upload' : 'local_upload',
+    path: item.url ? undefined : item.path,
+    url: item.url,
+    folderId: item.folderId,
+    filename: item.path.split(/[\\/]/).pop() || item.path,
+    protectionMode: item.protection?.mode,
+    promptToken: item.protection?.promptToken,
+    protectMetadata: item.protection?.protectMetadata,
+    videoUploadMode: item.videoUploadMode,
+    tempZipPath: item.tempZipPath,
+    totalBytes: item.totalBytes,
+    initialStatus: normalizeInitialStatus(item.status),
+});
+
+export const downloadItemToTransferRequest = (item: DownloadItem): DesktopTransferRequest => ({
+    id: item.id,
+    ownerId: item.ownerId,
+    direction: 'download',
+    kind: 'download',
+    folderId: item.folderId,
+    messageId: item.messageId,
+    filename: item.filename,
+    savePath: item.savePath,
+    collisionPolicy: item.collisionPolicy ?? 'keep_both',
+    protectionMode: item.protectionMode,
+    promptToken: item.promptToken,
+    totalBytes: item.totalBytes,
+    initialStatus: normalizeInitialStatus(item.status),
+});
+
+const normalizeInitialStatus = (status: QueueItem['status'] | DownloadItem['status']): TransferStatus => {
+    if (status === 'success') return 'completed';
+    if (status === 'error') return 'failed';
+    if (status === 'uploading' || status === 'downloading' || status === 'encrypting'
+        || status === 'decrypting' || status === 'verifying') return 'pending';
+    return status;
+};
+
+export async function listDesktopTransfers(): Promise<DesktopTransferJob[]> {
+    return transfers.list();
+}
+
+export async function enqueueDesktopTransfers(
+    requests: DesktopTransferRequest[],
+): Promise<DesktopTransferJob[]> {
+    if (requests.length === 0) return [];
+    return transfers.enqueueMany(requests);
+}
+
+export async function configureDesktopTransferLimits(maxUploads: number, maxDownloads: number) {
+    await transfers.setLimits(Math.max(1, maxUploads), Math.max(1, maxDownloads));
+}
+
+const itemJobActions = {
+    pause: transfers.pauseJob,
+    resume: transfers.resumeJob,
+    cancel: transfers.cancelJob,
+    retry: transfers.retryJob,
+} as const;
+
+export async function transferItemAction(
+    action: 'pause' | 'resume' | 'cancel' | 'retry',
+    id: string,
+    ownerId?: string,
+): Promise<DesktopTransferJob> {
+    return itemJobActions[action](id, ownerId);
+}
+
+const bulkJobActions = {
+    pause: transfers.pauseAll,
+    resume: transfers.resumeAll,
+    cancel: transfers.cancelAll,
+} as const;
+
+export async function transferBulkAction(
+    action: 'pause' | 'resume' | 'cancel',
+    direction: TransferDirection,
+    ownerId?: string,
+): Promise<DesktopTransferJob[]> {
+    return bulkJobActions[action](direction, ownerId);
+}
+
+export async function clearTerminalTransfers(
+    direction: TransferDirection,
+    includeFailedAndCancelled: boolean,
+    ownerId?: string,
+): Promise<string[]> {
+    return transfers.clearTerminal(direction, includeFailedAndCancelled, ownerId);
+}
+
+export async function supplyTransferPromptToken(id: string, promptToken: number): Promise<void> {
+    await transfers.supplyPromptToken(id, promptToken);
+}
+
+export async function listenToDesktopTransfers(
+    onUpsert: (job: DesktopTransferJob) => void,
+    onRemove: (id: string) => void,
+): Promise<() => void> {
+    const unlistenUpsert = await tauriListen<DesktopTransferJob>('transfer-upserted', job => {
+        onUpsert(job);
+    });
+    const unlistenRemove = await tauriListen<string>('transfer-removed', id => {
+        onRemove(id);
+    });
+    return () => {
+        unlistenUpsert();
+        unlistenRemove();
+    };
+}
+
+export function mergeTransferJob(
+    jobs: DesktopTransferJob[],
+    incoming: DesktopTransferJob,
+): DesktopTransferJob[] {
+    const existing = jobs.find(job => job.id === incoming.id);
+    if (existing && existing.revision >= incoming.revision) return jobs;
+    const next = existing
+        ? jobs.map(job => job.id === incoming.id ? incoming : job)
+        : [...jobs, incoming];
+    return next.sort((left, right) => left.queuePosition - right.queuePosition);
+}

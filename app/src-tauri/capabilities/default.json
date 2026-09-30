@@ -1,0 +1,24 @@
+{
+  "identifier": "default",
+  "description": "Standard permissions for Shelf Drive — no direct webview filesystem access; all file operations use trusted Rust commands",
+  "platforms": [
+    "linux",
+    "macOS",
+    "windows"
+  ],
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+    "os:default",
+    "shell:allow-open",
+    "store:default",
+    "updater:default",
+    "process:allow-restart",
+    "deep-link:default",
+    "clipboard-manager:allow-write-text",
+    "dialog:allow-open",
+    "dialog:allow-save"
+  ]
+}
