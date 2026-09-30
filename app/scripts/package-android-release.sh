@@ -58,19 +58,19 @@ node scripts/verify-android-release-version.cjs \
   --generated-properties src-tauri/gen/android/app/tauri.properties
 
 mkdir -p "$release_dir"
-cp "$apk" "$release_dir/Shelf-Drive-v${version}-android-universal.apk"
-cp "$aab" "$release_dir/Shelf-Drive-v${version}-android-universal.aab"
+cp "$apk" "$release_dir/ShelfDrive_${version}.apk"
+cp "$aab" "$release_dir/ShelfDrive_${version}.aab"
 for abi in arm64-v8a armeabi-v7a x86 x86_64; do
   cp "$(abi_apk_path "$abi")" "$release_dir/Shelf-Drive-v${version}-android-${abi}.apk"
 done
 
 (
   cd "$release_dir"
-  sha256sum Shelf-Drive-* > SHA256SUMS
+  sha256sum ShelfDrive_*.apk ShelfDrive_*.aab Shelf-Drive-*.apk > SHA256SUMS
 )
 
 node scripts/create-android-release-manifest.cjs \
-  --apk "$release_dir/Shelf-Drive-v${version}-android-universal.apk" \
+  --apk "$release_dir/ShelfDrive_${version}.apk" \
   --version "$version" \
   --version-code "$version_code" \
   --repository "${GITHUB_REPOSITORY:-hellocloudwebdev/shelf-drive}" \

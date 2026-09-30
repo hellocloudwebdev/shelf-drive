@@ -4,7 +4,7 @@ Telegram Drive is distributed as a signed sideloaded Android application, not th
 
 ## Fixed application identity
 
-- Package name: `com.cameronamer.telegramdrive`
+- Package name: `com.hellocloudweb.shelfdrive`
 - Minimum Android version: Android 7.0 / API 24
 - Target SDK: API 36
 - Release keystore: `${XDG_CONFIG_HOME:-$HOME/.config}/telegram-drive/signing/telegram-drive-release.keystore`
@@ -14,7 +14,7 @@ Telegram Drive is distributed as a signed sideloaded Android application, not th
 The keystore-file SHA-256 is only a backup-integrity checksum. It is **not** the Android signing-certificate fingerprint. Obtain the certificate fingerprint from a signed APK with:
 
 ```bash
-$ANDROID_HOME/build-tools/36.0.0/apksigner verify --print-certs Telegram-Drive-vX.Y.Z-android-universal.apk
+$ANDROID_HOME/build-tools/36.0.0/apksigner verify --print-certs ShelfDrive_vX.Y.Z.apk
 ```
 
 Never change the package name or signing key for an update. Android accepts an in-place upgrade only when both remain stable and the new `versionCode` is greater.
@@ -41,14 +41,15 @@ The production workflow fails closed if Android signing, updater signing, or the
 4. Reproduce the generated Android project and build the universal APK/AAB.
 5. Run the JNI/R8, four-ABI, 16 KB alignment, certificate, checksum, and generated-update-manifest gates.
 6. Run the separate **Android CI** workflow against the release commit and retain its signed `telegram-drive-android-signed` artifact after every Android gate passes.
-7. Push `vX.Y.Z` to start the desktop release workflow. That workflow does not invoke Android CI, so do not treat a passing desktop release as Android verification.
-8. Distribute the Android artifacts only after both independent workflows have passed for the same source revision.
+7. Push `vX.Y.Z` to start the release workflow. It builds and verifies Windows, Linux, macOS, and Android, attaches the signed Android APK/AAB and desktop artifacts to a draft release, and publishes only after every gate passes.
+8. Distribute the Android artifacts only after the release workflow has passed for the same source revision.
 
 The signed Android workflow artifact includes:
 
-- `Telegram-Drive-vX.Y.Z-android-universal.apk`
-- `Telegram-Drive-vX.Y.Z-android-universal.aab` (archival/device-management use)
-- `SHA256SUMS`
+- `ShelfDrive_vX.Y.Z.apk`
+- `ShelfDrive_vX.Y.Z.aab` (archival/device-management use)
+- `Shelf-Drive-vX.Y.Z-android-<abi>.apk` (per-ABI variants)
+- `SHA256SUMS.txt`
 - `android-update.json`
 - `android-update.json.sig`
 
@@ -93,7 +94,7 @@ On Android phones/tablets, download the signed universal APK from the matching G
 On Android TV or Google TV, either transfer the APK with a trusted local file-transfer tool or install it through ADB:
 
 ```bash
-adb install Telegram-Drive-vX.Y.Z-android-universal.apk
+adb install ShelfDrive_vX.Y.Z.apk
 ```
 
 For an upgrade, use `adb install -r ...` or the in-app updater. Never uninstall first unless intentionally deleting the device's local Telegram Drive data.

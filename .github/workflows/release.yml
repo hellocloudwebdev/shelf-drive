@@ -368,8 +368,58 @@ jobs:
             arch-package/shelf-drive-arch-runtime-sbom.cdx.json \
             --clobber
 
+  build-android:
+    name: Build and sign Android release
+    needs: create-release
+    uses: ./.github/workflows/android.yml
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    secrets: inherit
+
+  collect-android:
+    name: Verify and attach Android artifacts
+    needs: [create-release, build-android]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - name: Download the signed Android artifacts
+        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
+        with:
+          name: telegram-drive-android-signed
+          path: android-release
+
+      - name: Validate required Android artifacts
+        run: |
+          set -euo pipefail
+          version="${GITHUB_REF_NAME#v}"
+          test -f "android-release/ShelfDrive_${version}.apk"
+          test -f "android-release/ShelfDrive_${version}.aab"
+          test -s "android-release/android-update.json"
+          test -s "android-release/android-update.json.sig"
+          test -f "android-release/SHA256SUMS.txt"
+          jq -e --arg version "$version" \
+            '.packageName == "com.hellocloudweb.shelfdrive"
+              and .version == $version
+              and .filename == "ShelfDrive_\($version).apk"' \
+            android-release/android-update.json > /dev/null
+          (cd android-release && sha256sum -c SHA256SUMS.txt)
+
+      - name: Upload the Android artifacts to the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "$GITHUB_REF_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --clobber \
+            android-release/*
+
   release-assurance:
-    needs: [create-release, build-tauri, build-arch]
+    needs: [create-release, build-tauri, build-arch, collect-android]
     runs-on: ubuntu-22.04
     permissions:
       contents: write
@@ -395,6 +445,15 @@ jobs:
           mkdir -p release-assets
           gh release download "$GITHUB_REF_NAME" --dir release-assets --clobber
           rm -f release-assets/SHA256SUMS.txt release-assets/shelf-drive-source-sbom.cdx.json release-assets/provenance.sigstore.json release-assets/sbom-attestation.sigstore.json release-assets/arch-sbom-attestation.sigstore.json
+          version="${GITHUB_REF_NAME#v}"
+          old_installer="release-assets/Shelf Drive_${version}_x64-setup.exe"
+          if [ -f "$old_installer" ]; then
+            mv "$old_installer" "release-assets/ShelfDrive_${version}_x64-setup.exe"
+            mv "release-assets/Shelf Drive_${version}_x64-setup.exe.sig" "release-assets/ShelfDrive_${version}_x64-setup.exe.sig"
+            jq --arg url "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/ShelfDrive_${version}_x64-setup.exe" \
+              '.platforms["windows-x86_64"].url = $url' release-assets/latest.json > release-assets/latest.json.tmp
+            mv release-assets/latest.json.tmp release-assets/latest.json
+          fi
           cp release-assurance/shelf-drive-source-sbom.cdx.json release-assets/
           node scripts/generate-checksums.cjs release-assets release-assurance/SUBJECTS.sha256
 

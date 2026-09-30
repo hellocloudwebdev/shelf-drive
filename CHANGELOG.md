@@ -1,3 +1,17 @@
+## [4.0.0] - 2026-10-01
+
+### Interface
+
+- Moved the theme control from the mobile Home header into Settings → Appearance as a System/Light/Dark segmented selector with tinted selection states.
+- Made the mobile floating upload button more compact while preserving its frosted appearance.
+- Displayed the active bottom-navigation tab in white on the selected capsule.
+- Reworked the desktop top bar layout so the Upload button no longer covers the search filter button and long folder names truncate cleanly.
+
+### Distribution
+
+- Added signed Android universal APK and App Bundle artifacts, their checksums, and their update manifest to the GitHub release pipeline.
+- Renamed release artifacts to deterministic `ShelfDrive_*` names and pointed the desktop and Android updaters at this repository's releases.
+
 ## [3.9.5] - 2026-09-22
 
 ### Desktop reliability
