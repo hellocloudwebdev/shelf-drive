@@ -151,7 +151,8 @@ adb_retry logcat -c
 set +e
 (
   cd "$APP_ROOT/src-tauri/gen/android"
-  ./gradlew :app:connectedUniversalDebugAndroidTest \
+  timeout --kill-after=30s 15m ./gradlew :app:connectedUniversalDebugAndroidTest \
+    --no-daemon \
     -x :app:rustBuildArm64Debug \
     -x :app:rustBuildArmDebug \
     -x :app:rustBuildUniversalDebug \
