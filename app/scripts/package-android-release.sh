@@ -77,6 +77,12 @@ node scripts/create-android-release-manifest.cjs \
   --tag "${GITHUB_REF_NAME:-v${version}}" \
   --output "$release_dir/android-update.json"
 
-test -n "${TAURI_PRIVATE_KEY:-}"
-npx tauri signer sign "$release_dir/android-update.json"
+if [[ -n "${TAURI_PRIVATE_KEY_PATH:-}" ]]; then
+  npx tauri signer sign -f "$TAURI_PRIVATE_KEY_PATH" "$release_dir/android-update.json"
+elif [[ -n "${TAURI_PRIVATE_KEY:-}" ]]; then
+  npx tauri signer sign "$release_dir/android-update.json"
+else
+  echo "A Tauri updater private key is required to sign android-update.json" >&2
+  exit 1
+fi
 test -s "$release_dir/android-update.json.sig"

@@ -117,12 +117,15 @@ jobs:
           KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
         run: |
           const fs = require('fs');
+          const path = require('path');
           const key = process.env.KEY.trim();
           if (!key) throw new Error('TAURI_SIGNING_PRIVATE_KEY is required for Android release manifests.');
           const raw = key.startsWith('untrusted comment:')
             ? key
             : Buffer.from(key, 'base64').toString('utf8');
-          fs.appendFileSync(process.env.GITHUB_ENV, `TAURI_PRIVATE_KEY<<EOF\n${raw}\nEOF\n`);
+          const keyPath = path.join(process.env.RUNNER_TEMP, 'shelf-drive-updater.key');
+          fs.writeFileSync(keyPath, raw + '\n', { mode: 0o600 });
+          fs.appendFileSync(process.env.GITHUB_ENV, `TAURI_PRIVATE_KEY_PATH=${keyPath}\n`);
 
       - name: Build universal APK and App Bundle
         working-directory: app
@@ -204,7 +207,7 @@ jobs:
         working-directory: app
         env:
           ANDROID_SIGNING_CERT_SHA256: ${{ secrets.ANDROID_SIGNING_CERT_SHA256 }}
-          TAURI_PRIVATE_KEY: ${{ env.TAURI_PRIVATE_KEY }}
+          TAURI_PRIVATE_KEY_PATH: ${{ env.TAURI_PRIVATE_KEY_PATH }}
           TAURI_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         run: bash scripts/package-android-release.sh
 
