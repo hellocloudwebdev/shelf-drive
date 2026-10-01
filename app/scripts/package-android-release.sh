@@ -48,7 +48,7 @@ for abi in arm64-v8a armeabi-v7a x86 x86_64; do
   fi
 done
 
-jarsigner -verify -strict "$aab" >/dev/null
+jarsigner -verify "$aab" >/dev/null
 
 version="$(node -p "require('./src-tauri/tauri.conf.json').version")"
 version_code="$(sed -n 's/^tauri.android.versionCode=//p' src-tauri/gen/android/app/tauri.properties | head -n 1)"
@@ -73,7 +73,7 @@ node scripts/create-android-release-manifest.cjs \
   --apk "$release_dir/ShelfDrive_${version}.apk" \
   --version "$version" \
   --version-code "$version_code" \
-  --repository "${GITHUB_REPOSITORY:-hellocloudwebdev/shelf-drive}" \
+  --repository "${GITHUB_REPOSITORY:-Neeraj-shaw/shelf-drive}" \
   --tag "${GITHUB_REF_NAME:-v${version}}" \
   --output "$release_dir/android-update.json"
 
