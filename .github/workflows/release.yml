@@ -142,6 +142,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 release_id: releaseId,
+                tag_name: tag,
                 body: process.env.RELEASE_BODY,
                 draft: true
               });

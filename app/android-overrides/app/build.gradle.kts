@@ -49,13 +49,16 @@ val copyAndroidCppRuntime by tasks.registering(Copy::class) {
     from(ndkSysroot.map { file("$it/x86_64-linux-android/libc++_shared.so") }) {
         into("x86_64")
     }
-    into(layout.projectDirectory.dir("src/main/jniLibs"))
+    into(layout.buildDirectory.dir("intermediates/cxx_runtime"))
 }
 
 android {
     compileSdk = 36
     ndkVersion = "30.0.14904198"
     namespace = "com.hellocloudweb.shelfdrive"
+    sourceSets.getByName("main") {
+        jniLibs.srcDir(layout.buildDirectory.dir("intermediates/cxx_runtime"))
+    }
     defaultConfig {
         manifestPlaceholders["usesCleartextTraffic"] = "false"
         applicationId = "com.hellocloudweb.shelfdrive"
@@ -68,12 +71,7 @@ android {
     packaging {
         jniLibs {
             useLegacyPackaging = false
-            // The Tauri CLI symlinks the Rust cdylib into src/main/jniLibs and AGP
-            // discovers the same file through two source registrations, which fails
-            // the jniLibs merge as a duplicate. Both entries resolve to the same
-            // physical file, so picking the first is content-identical; the
-            // certificate, ABI, and 16 KB alignment gates still verify the result.
-            pickFirsts.add("**/libapp_lib.so")
+            pickFirsts.add("**/libc++_shared.so")
         }
     }
     signingConfigs {
