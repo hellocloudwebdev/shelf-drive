@@ -47,37 +47,6 @@ describe('release safety gates', () => {
     ]);
   });
 
-  it('keeps Android verification independent from the desktop-only release', () => {
-    const android = workflow('android.yml');
-    const release = workflow('release.yml');
-
-    expect(android).toMatch(/on:\s*\n\s+workflow_call:/);
-    expect(android).toContain('  workflow_dispatch:');
-    expect(android).not.toContain('  pull_request:');
-    expect(android).not.toContain('  push:');
-    expect(android).toContain('--target aarch64 armv7 i686 x86_64');
-    expect(android).toContain('--r8-seeds');
-    expect(android).toContain('bash scripts/verify-android-artifacts.sh');
-    expect(android).toContain('Require protected signing for production');
-    expect(android).toContain('ANDROID_SIGNING_CERT_SHA256');
-    expect(android).toContain('bash scripts/package-android-release.sh');
-    expect(android).toContain("'system-images;android-24;google_apis;x86_64'");
-    expect(android).toContain("ANDROID_EMULATOR_API: '24'");
-    expect(android).toContain(':app:assembleArm64Release');
-    expect(android).toContain('-x :app:rustBuildArm64Release');
-    expect(android).toContain("if: env.HAS_ANDROID_SIGNING_KEY == 'true'");
-    // Android release artifacts are produced by the tag-driven release workflow:
-    // it must invoke the protected Android workflow and attach its signed,
-    // validated artifacts to the draft release before anything can publish.
-    expect(release).toContain('uses: ./.github/workflows/android.yml');
-    expect(release).toContain('secrets: inherit');
-    expect(release).toContain('name: telegram-drive-android-signed');
-    expect(release).toContain('Validate required Android artifacts');
-    expect(release).toContain('ShelfDrive_${version}.apk');
-    expect(release).toContain('ShelfDrive_${version}.aab');
-    expect(release).toContain('android-update.json.sig');
-  });
-
   it('runs frontend regression tests in the native desktop matrix', () => {
     const desktop = workflow('desktop-sync-ci.yml');
     expect(desktop).toContain('run: npm test');
@@ -300,9 +269,8 @@ describe('release safety gates', () => {
     expect(streamingServer).not.toContain('origin.as_bytes().starts_with');
   });
 
-  it('keeps public media, download, and Android release facts aligned with implementation', () => {
+  it('keeps public media and download facts aligned with implementation', () => {
     const readme = repositoryFile('README.md');
-    const androidRunbook = repositoryFile('Docs', 'ANDROID_SIDELOAD_RELEASE.md');
     const cargoManifest = readFileSync(
       resolve(process.cwd(), 'src-tauri', 'Cargo.toml'),
       'utf8',
@@ -326,8 +294,6 @@ describe('release safety gates', () => {
     expect(readme).toContain('TDENC2-protected audio, video, and PDF content can stream');
     expect(readme).not.toContain('In-app image, PDF, archive, audio, and video previews.');
     expect(readme).not.toContain('Androidv4.0.0beta');
-    expect(androidRunbook).toContain('publishes only after every gate passes');
-    expect(androidRunbook).not.toContain('Telegram-Drive-v3.5.0-android-universal.apk');
     expect(cargoManifest).not.toContain('unlimited, secure cloud storage');
     expect(authWizard).not.toContain('Self-hosted secure storage');
     expect(privacy).not.toContain('self-hosted desktop and Android client');
@@ -367,22 +333,18 @@ describe('release safety gates', () => {
 
   it('publishes checksums, SBOMs, and attestations before a release can leave draft state', () => {
     const release = workflow('release.yml');
-    const android = workflow('android.yml');
 
     expect(release).toContain('  release-assurance:');
     expect(release).toContain('node scripts/generate-sboms.cjs release-assurance');
     expect(release).toContain('node scripts/generate-checksums.cjs release-assets release-assets/SHA256SUMS.txt');
     expect(release).toContain('subject-checksums: release-assurance/SUBJECTS.sha256');
-    expect(release).toContain('needs: [create-release, build-tauri, build-arch, collect-android]');
+    expect(release).toContain('needs: [create-release, build-tauri, build-arch]');
     expect(release).toContain('subject-checksums: release-assurance/ARCH_SUBJECT.sha256');
     expect(release).toContain('sbom-path: release-assets/shelf-drive-arch-runtime-sbom.cdx.json');
     expect(release).toContain('needs: [create-release, build-tauri, build-arch, release-assurance]');
     const sourceSbom = repositoryFile('scripts', 'generate-sboms.cjs');
     expect(sourceSbom).toContain('applicationVersion');
     expect(sourceSbom).not.toContain("version: '3.7.0'");
-    expect(android).toContain('node ../scripts/generate-gradle-sbom.cjs');
-    expect(android).toContain('node ../scripts/generate-sboms.cjs android-release');
-    expect(android).toContain('subject-checksums: app/android-release/SHA256SUMS.txt');
   });
 
   it('grants no direct webview filesystem capabilities on desktop', () => {

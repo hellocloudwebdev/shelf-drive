@@ -23,6 +23,7 @@ Shelf Drive is split into two repositories: `hellocloudwebdev/shelf-drive` (Wind
 | `app/src/components/mobile/MobileDashboard.tsx` | repo links -> hellocloudwebdev/shelf-drive | repo links -> hellocloudwebdev/shelf-drive-mobile |
 | `app/src/services/installationInfo.ts` | RELEASES_URL -> hellocloudwebdev/shelf-drive | may point at the mobile repo |
 | `app/src-tauri/tauri.conf.json` | desktop updater endpoint -> shelf-drive `latest.json` | no `plugins.updater` block |
+| `app/tests/unit/releaseGates.test.ts` | desktop gates kept; Android-gate, android.yml, gradle-SBOM and ANDROID_SIDELOAD_RELEASE assertions removed | desktop-gate assertions (desktop-sync-ci, Arch, AppImage, Windows runtime) removed; Android gates kept |
 | `.github/workflows/release.yml` | desktop jobs (win/linux/macos, arch, latest.json patch) | Android jobs (android.yml call, collect-android) |
 | `.github/workflows/` | desktop-sync-ci, arch-package, pages, visual-regression | android |
 | `app/scripts/` | windows scripts | android scripts |
