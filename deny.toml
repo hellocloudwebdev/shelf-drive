@@ -4,6 +4,8 @@ targets = [
   { triple = "x86_64-pc-windows-msvc" },
   { triple = "x86_64-apple-darwin" },
   { triple = "aarch64-apple-darwin" },
+  { triple = "aarch64-apple-ios" },
+  { triple = "aarch64-apple-ios-sim" },
   { triple = "aarch64-linux-android" },
 ]
 

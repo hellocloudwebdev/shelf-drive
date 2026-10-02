@@ -6,7 +6,7 @@
   <a href="https://github.com/hellocloudwebdev/shelf-drive/releases/latest"><img src="https://img.shields.io/github/v/release/hellocloudwebdev/shelf-drive?style=flat-square&color=4FC3F7&label=Latest%20Release" alt="Latest Release"></a>
   <a href="https://github.com/hellocloudwebdev/shelf-drive/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-0e7490?style=flat-square" alt="License: MIT"></a>
   <a href="https://github.com/hellocloudwebdev/shelf-drive/actions"><img src="https://img.shields.io/github/actions/workflow/status/hellocloudwebdev/shelf-drive/quality-assurance.yml?style=flat-square&label=CI&color=34d399" alt="CI Status"></a>
-  <img src="https://img.shields.io/badge/Platforms-Windows%20%7C%20macOS%20%7C%20Linux%20%7C%20Android%20%7C%20TV-4FC3F7?style=flat-square" alt="Platforms">
+  <img src="https://img.shields.io/badge/Platforms-Windows%20%7C%20macOS%20%7C%20Linux-4FC3F7?style=flat-square" alt="Platforms">
   <img src="https://img.shields.io/badge/Languages-24-fbbf24?style=flat-square" alt="24 Languages">
   <a href="https://www.shelfdrive.xyz"><img src="https://img.shields.io/badge/Website-shelfdrive.xyz-4FC3F7?style=flat-square" alt="Website"></a>
 </p>
@@ -93,34 +93,6 @@ Telegram gives every user **unlimited cloud storage** through Saved Messages and
 
 <br>
 
-### 📱 Mobile Experience
-
-The mobile interface features a **frosted glass navigation system** with a 5-tab bottom bar, floating upload button, and fluid gesture-driven interactions — designed from the ground up for touch.
-
-<p align="center">
-  <img src="./screenshots/MobileAuthScreen.png" width="280" alt="Mobile authentication screen with frosted glass design">
-  &nbsp;&nbsp;&nbsp;
-  <img src="./screenshots/AndroidDarkModeFolderView.png" width="280" alt="Android dark mode folder view">
-  &nbsp;&nbsp;&nbsp;
-  <img src="./screenshots/AndroidSettingsPage.png" width="280" alt="Android settings page">
-</p>
-
-<p align="center">
-  <em>Mobile: frosted glass auth · folder view · settings — all with the icy cyan accent.</em>
-</p>
-
-<details>
-<summary><strong>📸 More Mobile Screenshots</strong></summary>
-<br>
-
-| Home Screen | Folder List | Transfer Queue | Splash |
-|:---:|:---:|:---:|:---:|
-| <img src="./screenshots/AndroidHomeScreenWithIcon.png" width="200" alt="Home screen with app icon"> | <img src="./screenshots/AndroidFolderList.png" width="200" alt="Android folder list"> | <img src="./screenshots/AndroidTransferQue.png" width="200" alt="Transfer queue"> | <img src="./screenshots/AndroidTelegram-DriveSplash.png" width="200" alt="Splash screen"> |
-
-</details>
-
-<br>
-
 ---
 
 <p align="center">
@@ -129,7 +101,7 @@ The mobile interface features a **frosted glass navigation system** with a 5-tab
 
 ## Download
 
-### Desktop (v3.9.5)
+### Desktop (v4.0.0)
 
 | Platform | Download | Notes |
 |:---|:---|:---|
@@ -140,13 +112,6 @@ The mobile interface features a **frosted glass navigation system** with a 5-tab
 | **Linux (Fedora/RHEL)** | [`.rpm`](https://github.com/hellocloudwebdev/shelf-drive/releases/latest) | Fedora 38+, RHEL 9+ |
 | **Linux (AppImage)** | [`.AppImage`](https://github.com/hellocloudwebdev/shelf-drive/releases/latest) | Any distro with FUSE |
 | **Linux (Arch)** | [`.pacman`](https://github.com/hellocloudwebdev/shelf-drive/releases/latest) | Arch Linux, Manjaro |
-
-### Mobile
-
-| Platform | Download | Notes |
-|:---|:---|:---|
-| **Android** | [Sideload APK](https://github.com/hellocloudwebdev/shelf-drive/releases) | Android 8.0+, see [Sideload Guide](./Docs/ANDROID_SIDELOAD_RELEASE.md) |
-| **Google TV** | Same APK | Spatial navigation with remote control support |
 
 <br>
 
@@ -215,7 +180,7 @@ Getting started takes **under 2 minutes**. You need a free Telegram API ID — n
 
 Shelf Drive runs entirely on your device. There is no backend service, no cloud relay, and no account to create.
 
-1. **Your device** runs the React + Tauri frontend — the UI you interact with. Available on desktop (Windows, macOS, Linux), mobile (Android), and TV.
+1. **Your device** runs the React + Tauri frontend — the UI you interact with. Available on desktop (Windows, macOS, and Linux).
 
 2. **Shelf Drive Core** is the Rust backend running locally inside the Tauri container. It manages a SQLite database for file metadata, runs a local REST API and WebDAV server for integrations, and handles the streaming engine for media playback.
 
@@ -453,7 +418,6 @@ npm run i18n:check        # Locale validation
 | [Privacy Policy](./PRIVACY.md) | What data is and isn't collected |
 | [Security Policy](./SECURITY.md) | Vulnerability reporting and security model |
 | [Changelog](./CHANGELOG.md) | Version history and release notes |
-| [Android Sideload Guide](./Docs/ANDROID_SIDELOAD_RELEASE.md) | Install on Android without Play Store |
 
 <br>
 

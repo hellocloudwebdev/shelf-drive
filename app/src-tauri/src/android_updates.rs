@@ -29,10 +29,10 @@ pub struct AndroidInstallResult {
 
 #[cfg(target_os = "android")]
 const UPDATE_MANIFEST_URL: &str =
-    "https://github.com/Neeraj-shaw/shelf-drive/releases/latest/download/android-update.json";
+    "https://github.com/hellocloudwebdev/shelf-drive-mobile/releases/latest/download/android-update.json";
 #[cfg(target_os = "android")]
 const UPDATE_SIGNATURE_URL: &str =
-    "https://github.com/Neeraj-shaw/shelf-drive/releases/latest/download/android-update.json.sig";
+    "https://github.com/hellocloudwebdev/shelf-drive-mobile/releases/latest/download/android-update.json.sig";
 #[cfg(target_os = "android")]
 const UPDATE_PUBLIC_KEY: &str = "untrusted comment: minisign public key: 03E7E3B7C09606AE\nRWSuBpbAt+PnA7vfRA8F0MoFWAY3YoqErSB4AO1LhTG6KyvcLt53p+Hx\n";
 #[cfg(target_os = "android")]
@@ -113,7 +113,7 @@ fn validate_manifest(manifest: &AndroidUpdateManifest) -> Result<(), String> {
         || url.host_str() != Some("github.com")
         || !url
             .path()
-            .starts_with("/Neeraj-shaw/shelf-drive/releases/download/")
+            .starts_with("/hellocloudwebdev/shelf-drive-mobile/releases/download/")
         || !url.path().ends_with(&format!("/{}", manifest.filename))
     {
         return Err("The update metadata contains an untrusted download URL".into());
