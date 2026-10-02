@@ -92,8 +92,40 @@ Owner actions: create `hellocloudwebdev/shelf-drive-mobile`; add secrets above; 
 
 ## 9. Verification results
 
-_Filled after execution — see §9 in the final report below / commit history._
+## 9. Verification results (executed 2026-10-02, local Windows machine)
 
+**Desktop repo (branch `split/desktop-repo`):**
+
+| Check | Result |
+|---|---|
+| `npm run i18n:check` | PASS (all locale/literal-debt budgets) |
+| `npx vitest run` | PASS — 59 files, 301 tests |
+| `npm run build:verify` (tsc + vite + bundle budgets) | PASS (all budgets) |
+| `cargo fmt --all -- --check` | PASS |
+| `cargo check --lib` | PASS |
+| `cargo test --lib` | PASS — 315 tests, 0 failed |
+| `cargo clippy --lib --all-targets -- -D warnings` | PASS |
+| Windows NSIS build (`tauri.local.windows.conf.json`) | PASS — `Shelf Drive_4.0.0_x64-setup.exe` produced |
+| Workflow YAML validation (release.yml, desktop-sync-ci.yml) | PASS |
+| Stale-slug scan (`Neeraj-shaw` outside Docs/) | CLEAN |
+
+**Mobile repo (local `D:\Packages\SDRIVE\shelf-drive-mobile`):**
+
+| Check | Result |
+|---|---|
+| `npm ci` | PASS |
+| `npx vitest run` | PASS — 59 files, 297 tests (a first cold run under concurrent cargo compile reported transient worker errors; isolated re-run fully clean) |
+| `npm run i18n:check` | PASS |
+| `npm run build:verify` | PASS (all bundle budgets) |
+| `npm run android:jni:check` | PASS — 25 JNI signatures, 2 R8 keep rules |
+| `npm run release:version:check -- --tag v4.0.0 --changelog ../CHANGELOG.md` | PASS — versionCode 4000000 |
+| `cargo fmt --all -- --check` | PASS |
+| `cargo check --lib` (host) | PASS |
+| `cargo check --lib --target aarch64-linux-android` | PASS — 2 pre-existing dead-code warnings in `http_guard.rs` (file untouched by the split) |
+| Workflow YAML / JSON / TOML validation | PASS |
+| Stale-slug scan outside Docs/ | CLEAN |
+
+**Not executed (no false claims):** Android APK/AAB packaging locally (heavy; covered by CI `android.yml` — JNI contract, version contract, and the Android-target compile check ran locally instead); Linux build/packaging and Playwright visual tests (Linux-only, CI covers); iOS build (requires macOS/Xcode — iOS remains **not production-ready**); a full project security scan (the pre-commit scanner hit its output limit this session — run a deep scan before publishing).
 ## 10. Blockers & unresolved decisions
 
 1. **Owner approval to push** both repos and to create `shelf-drive-mobile` (outward-facing actions).
