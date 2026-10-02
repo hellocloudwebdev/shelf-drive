@@ -4,14 +4,12 @@ on:
   pull_request:
     paths:
       - "app/**"
-      - ".github/workflows/android.yml"
       - ".github/workflows/desktop-sync-ci.yml"
       - ".github/workflows/release.yml"
   push:
     branches: [main, develop]
     paths:
       - "app/**"
-      - ".github/workflows/android.yml"
       - ".github/workflows/desktop-sync-ci.yml"
       - ".github/workflows/release.yml"
   workflow_dispatch:
