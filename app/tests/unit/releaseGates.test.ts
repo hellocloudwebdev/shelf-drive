@@ -132,7 +132,7 @@ describe('release safety gates', () => {
     expect(settingsModal).toContain("installationInfo?.managedByPackageManager ? t('common.open')");
     expect(archCi).toContain('  pull_request:');
     expect(archCi).toMatch(/archlinux:base-devel-[^\s]+@sha256:[0-9a-f]{64}/);
-    expect(archCi).toContain('d229a414025650d44211521ca350298d67c7d8136001f8300636bb3ea2ecc35f');
+    expect(archCi).toContain('c9d6137596cf2535f08a622453722008c97f6649154ecd90f82cb2fdac0e8f20');
     expect(archCi).toContain('makepkg --printsrcinfo');
     expect(archCi).toContain('scripts/verify-arch-package.sh');
     expect(archCi).not.toContain("sha256sums=('SKIP')");

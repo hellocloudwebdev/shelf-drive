@@ -61,22 +61,22 @@ jobs:
             xorg-xauth
 
       - name: Download and verify the immutable packaging fixture
-        # BLOCKED ON SHELF DRIVE FIXTURE: this pinned upstream Telegram Drive 3.7.0 deb no longer
-        # matches render-arch-pkgbuild.sh's Shelf.Drive_* name guard. Regenerate a
-        # Shelf.Drive_3.7.0_amd64.deb (tauri build --bundles deb on ubuntu-22.04), publish it as a
-        # release asset on hellocloudwebdev/shelf-drive, then update the URL, filename, and SHA here.
+        # Self-hosted fixture built by the 'Arch fixture build' workflow
+        # (.github/workflows/arch-fixture.yml) and published on the ci-fixtures
+        # release. After a version bump, re-run that workflow and update the
+        # URL, filename, SHA256, and the version arguments below together.
         run: |
           set -euo pipefail
           mkdir -p fixture
           curl --fail --location --retry 3 \
-            'https://github.com/caamer20/Telegram-Drive/releases/download/v3.7.0/Telegram.Drive_3.7.0_amd64.deb' \
-            --output fixture/Telegram.Drive_3.7.0_amd64.deb
-          echo 'd229a414025650d44211521ca350298d67c7d8136001f8300636bb3ea2ecc35f  fixture/Telegram.Drive_3.7.0_amd64.deb' | sha256sum -c -
+            'https://github.com/hellocloudwebdev/shelf-drive/releases/download/ci-fixtures/Shelf.Drive_4.0.0_amd64.deb' \
+            --output fixture/Shelf.Drive_4.0.0_amd64.deb
+          echo 'c9d6137596cf2535f08a622453722008c97f6649154ecd90f82cb2fdac0e8f20  fixture/Shelf.Drive_4.0.0_amd64.deb' | sha256sum -c -
 
       - name: Build and inspect the fixture package as an unprivileged user
         run: |
           set -euo pipefail
-          bash scripts/render-arch-pkgbuild.sh fixture/Telegram.Drive_3.7.0_amd64.deb 3.7.0 arch-package
+          bash scripts/render-arch-pkgbuild.sh fixture/Shelf.Drive_4.0.0_amd64.deb 4.0.0 arch-package
           useradd --create-home --shell /bin/bash arch-builder
           chown -R arch-builder:arch-builder arch-package
           runuser -u arch-builder -- bash -c 'cd "$1" && makepkg --printsrcinfo > .SRCINFO && makepkg --cleanbuild --clean --noconfirm' _ "$PWD/arch-package"
@@ -88,7 +88,7 @@ jobs:
             exit 1
           fi
           pacman -U --noconfirm "${package_path}"
-          bash scripts/verify-arch-package.sh "${package_path}" 3.7.0
+          bash scripts/verify-arch-package.sh "${package_path}" 4.0.0
 
       - name: Verify the native package starts and produces a runtime SBOM
         run: |
@@ -105,4 +105,4 @@ jobs:
             cat arch-package/startup-smoke.log
             exit 1
           fi
-          bash scripts/generate-arch-runtime-sbom.sh 3.7.0 arch-package/shelf-drive-arch-runtime-sbom.cdx.json
+          bash scripts/generate-arch-runtime-sbom.sh 4.0.0 arch-package/shelf-drive-arch-runtime-sbom.cdx.json
