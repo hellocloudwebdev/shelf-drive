@@ -43,7 +43,7 @@ jobs:
         run: |
           set -euo pipefail
           version="$(node -p "require('./app/package.json').version")"
-          deb="$(find app/src-tauri/target/release/debian -maxdepth 1 -type f -name '*.deb' -print -quit)"
+          deb="$(find app/src-tauri/target/release/bundle/deb -maxdepth 1 -type f -name '*.deb' -print -quit)"
           test -n "${deb}"
           cp "${deb}" "Shelf.Drive_${version}_amd64.deb"
           sha256sum "Shelf.Drive_${version}_amd64.deb" | tee fixture-sha256.txt
