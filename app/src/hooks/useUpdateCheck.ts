@@ -29,6 +29,8 @@ interface AndroidUpdateProgress {
     percent?: number;
 }
 
+const BACKGROUND_CHECK_INTERVAL_MS = 6 * 60 * 60 * 1000;
+
 export function useUpdateCheck() {
     const [state, setState] = useState<UpdateState>({
         checking: false,
@@ -156,7 +158,13 @@ export function useUpdateCheck() {
         const timer = setTimeout(() => {
             checkForUpdates().catch(console.error);
         }, 5000);
-        return () => clearTimeout(timer);
+        const interval = setInterval(() => {
+            checkForUpdates().catch(console.error);
+        }, BACKGROUND_CHECK_INTERVAL_MS);
+        return () => {
+            clearTimeout(timer);
+            clearInterval(interval);
+        };
     }, [checkForUpdates]);
 
     return {

@@ -1,3 +1,13 @@
+## [4.0.1] - 2026-10-05
+
+### Interface
+
+- Added a recurring background update check every six hours so a running app notices new releases without a restart, alongside the existing startup check.
+
+### Distribution
+
+- Made 4.0.1 the first published desktop release; the in-app updater now serves signed manifests from this repository's releases, so installs update in place instead of downloading from GitHub manually.
+
 ## [4.0.0] - 2026-10-01
 
 ### Interface
