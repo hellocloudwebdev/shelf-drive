@@ -7,7 +7,10 @@
     "RUSTSEC-2026-0119": "Requires upstream grammers support for Hickory 0.26.",
     "RUSTSEC-2026-0253": "The transitive dav-server cache uses non-panicking key types; a major dependency migration is tracked separately.",
     "RUSTSEC-2026-0194": "The affected parser handles repository-controlled Tauri plist metadata, not untrusted XML.",
-    "RUSTSEC-2026-0195": "The affected parser handles repository-controlled Tauri plist metadata, not untrusted XML."
+    "RUSTSEC-2026-0195": "The affected parser handles repository-controlled Tauri plist metadata, not untrusted XML.",
+    "RUSTSEC-2026-0367": "ZIP extraction advisory; the archive viewer and single-entry reader never call extract, and entry bytes are written to a self-named temp file so archive permission bits are never applied.",
+    "RUSTSEC-2026-0368": "ZIP symlink-escape advisory scoped to ZipArchive::extract, which Telegram Drive never calls; the updater only takes that path for ZIP payloads and the release manifest serves NSIS installers.",
+    "RUSTSEC-2026-0369": "ZIP permission-through-symlink advisory scoped to extract()/extract_unchecked(); nothing in the graph extracts archives onto disk, and the zip 9 upgrade is blocked on the Tauri updater plugin."
   },
   "yankedCrates": {
     "chacha20@0.10.0": "Transitive Actix dependency awaiting a compatible lockfile refresh.",

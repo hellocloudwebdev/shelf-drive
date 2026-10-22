@@ -16,6 +16,13 @@
 ### Reliability
 
 - Bumped the total CSS bundle budget from 140 kB to 160 kB to cover the new shell theme layer.
+
+### Security
+
+- Updated the TLS stack to rustls 0.23.46 and rustls-webpki 0.103.16, and refreshed the bundled root stores to 1.0.10, closing five rustls/webpki advisories published since 4.0.1.
+- Updated zip to 2.6.1 and recorded the remaining zip extraction advisories in the reviewed dependency baseline, since the archive viewer reads entries into a self-named temp file and never calls the affected extract APIs.
+- Updated the build toolchain to vite 7.3.7, vitest 4.1.12 and source-map-js 1.2.2, which cleared six previously allowlisted npm advisories.
+
 ## [4.0.1] - 2026-10-05
 
 ### Interface

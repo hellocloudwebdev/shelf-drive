@@ -24,6 +24,9 @@ ignore = [
   { id = "RUSTSEC-2026-0253", reason = "Transitive dav-server cache uses non-panicking key types and does not wrap key destruction in catch_unwind; major upgrade is tracked separately." },
   { id = "RUSTSEC-2026-0194", reason = "Transitive Tauri plist build/config parser receives repository-controlled application metadata, not uploaded or remote XML." },
   { id = "RUSTSEC-2026-0195", reason = "Transitive Tauri plist build/config parser receives repository-controlled application metadata, not uploaded or remote XML." },
+  { id = "RUSTSEC-2026-0367", reason = "ZIP extraction advisory: Telegram Drive never calls ZipArchive::extract or ZipStreamReader::extract, and its single-entry reader sanitises names and writes the bytes to a self-named temp file, so archive permission bits are never applied." },
+  { id = "RUSTSEC-2026-0368", reason = "ZIP symlink-escape advisory scoped to ZipArchive::extract, which neither the archive viewer nor the entry reader calls; the updater only takes that path for ZIP payloads and the release manifest serves NSIS installers." },
+  { id = "RUSTSEC-2026-0369", reason = "ZIP permission-through-symlink advisory scoped to extract()/extract_unchecked(); no dependency in the graph extracts archives onto disk, and the upstream zip 9 upgrade is tracked with the Tauri updater plugin." },
 ]
 
 [licenses]
