@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://telegram-drive.com/sitemap.xml
+Sitemap: https://hellocloudwebdev.github.io/shelf-drive/sitemap.xml
